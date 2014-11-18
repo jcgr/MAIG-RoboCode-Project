@@ -41,3 +41,16 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# =========================
+# LaTeX
+# =========================
+
+*.aux
+*.bbl
+*.bib
+*.blg
+*.log
+*.out
+#*.pdf
+*.synctex.gz
