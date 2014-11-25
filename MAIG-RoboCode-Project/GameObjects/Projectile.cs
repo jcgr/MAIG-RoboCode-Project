@@ -8,6 +8,8 @@
 
         public string Name { get; private set; }
 
+        public RobotInfo Owner { get; private set; }
+
         public double Power { get; private set; }
 
         public double Velocity { get; private set; }
@@ -42,28 +44,28 @@
             }
         }
 
-        public Projectile(double x, double y, double heading, double power, double velocity, bool active)
+        public Projectile(double x, double y, double heading, double power, bool active)
         {
             this.X = x;
             this.Y = y;
             this.Heading = heading;
             this.Power = power;
-            this.Velocity = velocity;
+            this.Velocity = PowerToVelocity(this.Power);
             this.IsActive = active;
         }
 
-        public Projectile nextTick()
+        public Projectile NextTick()
         {
-            var newPos = this.nextPosition();
+            var newPos = this.NextPosition();
             var x = newPos.Item1;
             var y = newPos.Item2;
 
-            return new Projectile(x, y, this.Heading, this.Power, this.Velocity, this.IsActive);
+            return new Projectile(x, y, this.Heading, this.Power, this.IsActive);
         }
 
-        private Tuple<double, double> nextPosition()
+        private Tuple<double, double> NextPosition()
         {
-            var displacedPosition = this.DegreeToXY(this.Heading, this.Velocity);
+            var displacedPosition = Global.DegreeToXY(this.Heading, this.Velocity);
 
             var newX = displacedPosition.Item1 + this.X;
             var newY = displacedPosition.Item2 + this.Y;
@@ -71,22 +73,9 @@
             return new Tuple<double, double>(newX, newY);
         }
 
-        private Tuple<double, double> DegreeToXY(double degrees, double radius)
+        private static double PowerToVelocity(double power)
         {
-            // Change from compass degrees (Robocode) to x/y degrees
-            // If degrees less than 90, add 360 to make degrees not negative
-            var modifiedDegrees = degrees < 90 ? degrees + 360 : degrees;
-            modifiedDegrees = (modifiedDegrees - 90) % 360;
-
-            var radians = modifiedDegrees * Math.PI / 180.0;
-
-            var x = Math.Cos(radians) * radius;
-            var y = Math.Sin(-radians) * radius;
-
-            x = Math.Abs(x) < 1.0E-15 ? 0 : x;
-            y = Math.Abs(y) < 1.0E-15 ? 0 : y;
-
-            return new Tuple<double, double>(x, y);
+            return 20 - (3 * power);
         }
     }
 }
