@@ -223,7 +223,7 @@
             return Math.Abs(change) > Global.MAX_RADAR_ROTATION ? (change > 0 ? Global.MAX_RADAR_ROTATION : -Global.MAX_RADAR_ROTATION) : change;
         }
 
-        private Tuple<double, double> NextPosition(double heading, double velocity)
+        public Tuple<double, double> NextPosition(double heading, double velocity)
         {
             var displacedPosition = Global.DegreeToXY(heading, velocity);
 
@@ -236,6 +236,14 @@
             newY = newY > Global.BF_HEIGHT ? Global.BF_HEIGHT : newY;
 
             return new Tuple<double, double>(newX, newY);
+        }
+
+        public double GetScore()
+        {
+            var score = 0.0;
+            score += this.ScoreList["bullet"] * Global.SCORE_PER_BULLET_DAMAGE;
+            score += this.ScoreList["survival"] * Global.SCORE_SURVIVAL_BONUS;
+            return score;
         }
     }
 }

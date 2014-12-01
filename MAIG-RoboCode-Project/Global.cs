@@ -18,6 +18,17 @@
 
         public static double BF_HEIGHT = 100;
 
+        public static readonly double SCORE_PER_BULLET_DAMAGE = 1;
+
+        public static readonly double SCORE_SURVIVAL_BONUS = 50;
+
+        /// <summary>
+        /// 
+        /// Inspired by http://www.vcskicks.com/code-snippet/degree-to-xy.php
+        /// </summary>
+        /// <param name="degrees"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
         public static Tuple<double, double> DegreeToXY(double degrees, double radius)
         {
             // Change from compass degrees (Robocode) to x/y degrees
@@ -34,6 +45,27 @@
             y = Math.Abs(y) < TOLERANCE ? 0 : y;
 
             return new Tuple<double, double>(x, y);
+        }
+
+        /// <summary>
+        /// 
+        /// Inspired by http://www.vcskicks.com/code-snippet/degree-to-xy.php
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="originX"></param>
+        /// <param name="originY"></param>
+        /// <returns></returns>
+        public static double XYToDegree(double x, double y, double originX, double originY)
+        {
+            var deltaX = originX - x;
+            var deltaY = originY - y;
+
+            var radAngle = Math.Atan2(deltaY, deltaX);
+            var degreeAngle = radAngle * 180.0 / Math.PI;
+
+            var angle = 180.0 - degreeAngle;
+            return (angle + 90) % 360;
         }
     }
 }
