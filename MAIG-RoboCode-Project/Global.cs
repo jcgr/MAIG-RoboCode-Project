@@ -14,6 +14,10 @@
 
         public static readonly double MAX_RADAR_ROTATION = 45;
 
+        public static double BF_WIDTH = 100;
+
+        public static double BF_HEIGHT = 100;
+
         public static Tuple<double, double> DegreeToXY(double degrees, double radius)
         {
             // Change from compass degrees (Robocode) to x/y degrees

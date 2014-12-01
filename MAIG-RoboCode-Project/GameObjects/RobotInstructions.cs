@@ -1,6 +1,6 @@
 ﻿namespace MAIG_RoboCode_Project
 {
-    class RobotInstructions
+    public class RobotInstructions
     {
 
         public double MoveDistance { get; private set; }
@@ -20,6 +20,18 @@
             this.GunDegrees = gunDegrees;
             this.RadarDegrees = radarDegrees;
             this.FirePower = firePower;
+        }
+
+        public static RobotInstructions GetEnemyInstructions(Gamestate gs)
+        {
+            var distance = 0;
+            var robotDegrees = 0;
+            var gunDegrees = 0;
+            var radarDegrees = 0;
+            var firePower = 0;
+
+            //TODO: Implement this!
+            return new RobotInstructions(distance,robotDegrees,gunDegrees,radarDegrees,firePower);
         }
     }
 }

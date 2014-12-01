@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameObjects\Gamestate.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="MyRobot.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
