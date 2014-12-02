@@ -26,6 +26,12 @@
             this.FirePower = firePower;
         }
 
+        public static List<RobotInstructions> GetListOfInstructions()
+        {
+            // TODO: IMPLEMENT THIS
+            return null;
+        }
+
         public static RobotInstructions GetEnemyInstructions(Gamestate gs, List<Projectile> projectiles)
         {
             var robot = gs.EnemyRobot;

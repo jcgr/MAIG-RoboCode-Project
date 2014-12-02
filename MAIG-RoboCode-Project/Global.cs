@@ -4,6 +4,8 @@
 
     public static class Global
     {
+        private static Random rand;
+
         public static readonly double TOLERANCE = 1.0E-15;
 
         public static double COOLING_RATE = 0.1;
@@ -22,7 +24,23 @@
 
         public static readonly double SCORE_SURVIVAL_BONUS = 50;
 
+        public static readonly double PLAYER_SCORE_WEIGHT = 1.0;
+        
+        public static readonly double ENEMY_SCORE_WEIGHT = 0.5;
+
         public static readonly double MCTS_VISIT_THRESHOLD = 3;
+
+        public static readonly double MCTS_EXPLORATION_CONSTANT = 10;
+
+        public static readonly double MCTS_MAX_PATH_TO_ROOT = 20;
+
+        public static Random Random
+        {
+            get
+            {
+                return rand ?? (rand = new Random());
+            }
+        }
 
         /// <summary>
         /// 
