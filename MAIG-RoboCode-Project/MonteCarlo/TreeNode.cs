@@ -1,9 +1,8 @@
-﻿namespace MAIG_RoboCode_Project.MCTS
+﻿namespace MAIG_RoboCode_Project.MonteCarlo
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.Remoting.Messaging;
 
     public class TreeNode
     {
@@ -73,7 +72,8 @@
 
         public TreeNode expand()
         {
-            var possibleMoves = RobotInstructions.GetListOfInstructions();
+            var ourRobot = this.Gamestate.OurRobot;
+            var possibleMoves = RobotInstructions.GetListOfInstructions(ourRobot.Velocity, ourRobot.CanFire);
 
             foreach (var ri in possibleMoves)
             {
@@ -108,6 +108,7 @@
 
         public bool IsTerminalNode()
         {
+            //Console.WriteLine((this.Gamestate.OurRobot != null) + ", " + (this.Gamestate.EnemyRobot != null) + ", " + Global.MCTS_MAX_PATH_TO_ROOT);
             var robotDead = this.Gamestate.OurRobot.Status == RoboStatus.Destroyed
                             || this.Gamestate.EnemyRobot.Status == RoboStatus.Destroyed;
 
@@ -116,7 +117,8 @@
 
         public bool IsLeafNode()
         {
-            return this.Children.Count != RobotInstructions.GetListOfInstructions().Count;
+            var ourRobot = this.Gamestate.OurRobot;
+            return this.Children.Count != RobotInstructions.GetListOfInstructions(ourRobot.Velocity, ourRobot.CanFire).Count;
         }
 
         public double GetScore()

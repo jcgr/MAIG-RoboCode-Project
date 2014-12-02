@@ -13,12 +13,15 @@
 
         public bool RobotDied { get; private set; }
 
-        public Gamestate(RobotInfo ours, RobotInfo enemy, List<Projectile> projectilesInFlight)
+        public RobotInstructions Instructions { get; private set; }
+
+        public Gamestate(RobotInfo ours, RobotInfo enemy, List<Projectile> projectilesInFlight, RobotInstructions ri)
         {
-            OurRobot = ours;
+            this.OurRobot = ours;
             this.EnemyRobot = enemy;
-            FlyingProjectiles = projectilesInFlight;
-            RobotDied = false;
+            this.FlyingProjectiles = projectilesInFlight;
+            this.RobotDied = false;
+            this.Instructions = ri;
         }
 
         public static Gamestate SimulateTurn(Gamestate gs, RobotInstructions ours, RobotInstructions enemy = null)
@@ -40,7 +43,7 @@
                 enemyRobot.ScoreList["survival"] += 1;
             }
 
-            return new Gamestate(ourRobot,enemyRobot,movedProjectiles);
+            return new Gamestate(ourRobot, enemyRobot, movedProjectiles, ours);
         }
     }
 }

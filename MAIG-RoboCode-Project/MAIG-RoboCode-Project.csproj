@@ -29,6 +29,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="robocode">
       <HintPath>C:\robocode\libs\robocode.dll</HintPath>
@@ -46,8 +49,8 @@
     <Compile Include="Global.cs" />
     <Compile Include="MCTSRobot.cs" />
     <Compile Include="GameObjects\Projectile.cs" />
-    <Compile Include="MCTS\MCTS.cs" />
-    <Compile Include="MCTS\TreeNode.cs" />
+    <Compile Include="MonteCarlo\MCTS.cs" />
+    <Compile Include="MonteCarlo\TreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GameObjects\RobotInfo.cs" />
     <Compile Include="GameObjects\RobotInstructions.cs" />

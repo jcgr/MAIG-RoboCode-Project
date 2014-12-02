@@ -1,9 +1,30 @@
-﻿﻿namespace MAIG_RoboCode_Project.MCTS
+﻿﻿namespace MAIG_RoboCode_Project.MonteCarlo
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
     using System.Diagnostics;
 
     public class MCTS
     {
+
+        public static void Main()
+        {
+            var mcts = new MCTS();
+
+            var us = new RobotInfo(100, 0, 25, 25, 0, 0, 0, 0, "US");
+            var them = new RobotInfo(100, 0, 75, 75, 0, 0, 0, 0, "THEM");
+
+            var gamestate = new Gamestate(us, them, new List<Projectile>(), null);
+
+            Console.WriteLine("Pre-search");
+            mcts.Search(gamestate);
+
+            Console.WriteLine("Post-search");
+
+            while (true) ;
+        }
+
         /// <summary>
         /// The root node of the tree.
         /// </summary>
@@ -19,33 +40,32 @@
         /// </summary>
         /// <param name="game">The gamestate to start the search at.</param>
         /// <returns>The treenode that contains the best action.</returns>
-        public TreeNode search(Gamestate game)
+        public TreeNode Search(Gamestate game)
 	    {
-		    Root = new TreeNode(game, null, 0);
-            
-		    var currNode = Root;
+		    this.Root = new TreeNode(game, null, 0);
+
             var sw = new Stopwatch();
             sw.Start();
 
-		    CurrIteration = 0;
+		    this.CurrIteration = 0;
 		    while (sw.ElapsedMilliseconds < Global.MCTS_ALLOWED_SEARCH_TIME
-				    && CurrIteration < Global.MCTS_MAX_ITERATIONS)
+				    && this.CurrIteration < Global.MCTS_MAX_ITERATIONS)
 		    {
 			    // Selection + Expansion
-			    currNode = Selection();
+			    var currNode = this.Selection();
 
 			    // Playout / simulation
-			    var tempNode = Playout(currNode);
+			    var tempNode = this.Playout(currNode);
 
 			    // Backpropagation
-			    Backpropagate(currNode, tempNode);
-			    CurrIteration++;
+			    this.Backpropagate(currNode, tempNode);
+			    this.CurrIteration++;
 		    }
 
 		    TreeNode bestNode = null;
 		    double bestNodeScore = -100;
 
-		    foreach (TreeNode tn in Root.Children)
+		    foreach (var tn in this.Root.Children)
 		    {
 			    if (tn.GetScore() > bestNodeScore)
 			    {
@@ -63,7 +83,7 @@
         /// <returns>The newly expanded node or the best child.</returns>
         private TreeNode Selection()
         {
-            TreeNode tempNode = Root;
+            var tempNode = this.Root;
 
             while (!tempNode.IsTerminalNode())
                 if (!tempNode.IsLeafNode())
@@ -81,13 +101,13 @@
         /// <returns>The final node of the simulation.</returns>
         private TreeNode Playout(TreeNode node)
         {
-            TreeNode tempNode = node;
+            var tempNode = node;
 
             while (!tempNode.IsTerminalNode())
             {
-                // TODO: Check if it matches actual method signatures
                 var tempGame = tempNode.Gamestate;
-                var possibleActions = RobotInstructions.GetListOfInstructions();
+                var ourRobot = tempGame.OurRobot;
+                var possibleActions = RobotInstructions.GetListOfInstructions(ourRobot.Velocity, ourRobot.CanFire);
                 var randomInstruction = possibleActions[Global.Random.Next(possibleActions.Count)];
 
                 tempGame = Gamestate.SimulateTurn(tempGame, randomInstruction);

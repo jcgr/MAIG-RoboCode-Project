@@ -14,6 +14,16 @@
 
         public static readonly double MAX_GUN_ROTATION = 20;
 
+        public static readonly double GUN_TURN_INTERVAL = 10;
+
+        public static readonly double ROBOT_TURN_INTERVAL = 20;
+
+        public static readonly double SIMULATION_MAX_ROBOT_ROTATION = 40;
+        
+        public static readonly double RADAR_TURN_INTERVAL = 20;
+
+        public static readonly double SIMULATION_MAX_RADAR_ROTATION = 40;
+
         public static readonly double MAX_RADAR_ROTATION = 45;
 
         public static double BF_WIDTH = 100;
@@ -32,7 +42,11 @@
 
         public static readonly double MCTS_EXPLORATION_CONSTANT = 10;
 
-        public static readonly double MCTS_MAX_PATH_TO_ROOT = 20;
+        public static readonly double MCTS_MAX_PATH_TO_ROOT = 50;
+
+        public static readonly double MCTS_ALLOWED_SEARCH_TIME = 5000;
+
+        public static readonly double MCTS_MAX_ITERATIONS = 50000;
 
         public static Random Random
         {
@@ -41,10 +55,6 @@
                 return rand ?? (rand = new Random());
             }
         }
-
-        public static readonly double MCTS_ALLOWED_SEARCH_TIME = 40;
-
-        public static readonly double MCTS_MAX_ITERATIONS = 100;
 
         /// <summary>
         /// 

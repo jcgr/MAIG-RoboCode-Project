@@ -6,7 +6,42 @@
 
     public class RobotInstructions
     {
+        private static List<RobotInstructions> listOfInstructions; 
 
+        public static List<RobotInstructions> ListOfInstructions
+        {
+            get
+            {
+                if (listOfInstructions != null)
+                {
+                    return listOfInstructions;
+                }
+
+                var list = new List<RobotInstructions>();
+                for (var vc = -2; vc < 2; vc++)
+                {
+                    for (var rd = -Global.SIMULATION_MAX_ROBOT_ROTATION; rd < Global.SIMULATION_MAX_ROBOT_ROTATION; rd += Global.ROBOT_TURN_INTERVAL)
+                    {
+                        for (var gd = -Global.MAX_GUN_ROTATION; gd < Global.MAX_GUN_ROTATION; gd += Global.GUN_TURN_INTERVAL)
+                        {
+                            for (var radard = -Global.SIMULATION_MAX_RADAR_ROTATION; radard < Global.SIMULATION_MAX_RADAR_ROTATION; radard += Global.RADAR_TURN_INTERVAL)
+                            {
+                                list.Add(new RobotInstructions(0, rd, gd, radard, 0, vc)); // Don't shoot
+                                list.Add(new RobotInstructions(0, rd, gd, radard, 1, vc)); // Shoot
+                            }
+                        }
+                    }
+                }
+
+                listOfInstructions = list;
+                return listOfInstructions;
+            }
+
+            set
+            {
+                listOfInstructions = value;
+            }
+        }
         public double MoveDistance { get; private set; }
 
         public double RobotDegrees { get; private set; }
@@ -17,19 +52,45 @@
 
         public double FirePower { get; private set; }
 
-        public RobotInstructions(double moveDistance, double robotDegrees, double gunDegrees, double radarDegrees, double firePower)
+        public double VelocityChange { get; private set; }
+
+        public RobotInstructions(double moveDistance, double robotDegrees, double gunDegrees, double radarDegrees, double firePower, double velocityChange = 0)
         {
             this.MoveDistance = moveDistance;
             this.RobotDegrees = robotDegrees;
             this.GunDegrees = gunDegrees;
             this.RadarDegrees = radarDegrees;
             this.FirePower = firePower;
+            this.VelocityChange = velocityChange;
         }
 
-        public static List<RobotInstructions> GetListOfInstructions()
+        public static List<RobotInstructions> GetListOfInstructions(double velocity, bool canShoot)
         {
-            // TODO: IMPLEMENT THIS
-            return null;
+            return ListOfInstructions.Where(ri => IsInstructionPossible(velocity, canShoot, ri)).ToList();
+        }
+
+        public static bool IsInstructionPossible(double velocity, bool canShoot, RobotInstructions ri)
+        {
+            if ((velocity < 0 && ri.VelocityChange == -2.0) 
+                || (velocity > 0 && ri.VelocityChange == 2.0))
+            {
+                return false;
+            }
+
+            if ((velocity == 8.0 && ri.VelocityChange > 0.0)
+                || (velocity == -8.0 && ri.VelocityChange < 0.0))
+            {
+                return false;
+            }
+
+            if (ri.FirePower > 0.0 && !canShoot)
+            {
+                return false;
+            }
+
+            var maxDegree = 10 - (0.75 * velocity);
+
+            return !(Math.Abs(ri.RobotDegrees) > maxDegree);
         }
 
         public static RobotInstructions GetEnemyInstructions(Gamestate gs, List<Projectile> projectiles)
@@ -100,7 +161,7 @@
             var playerRobotInSight = false;
             var gunDegrees = 0.0;
             var enemyNextPos = gs.OurRobot.NextPosition(gs.OurRobot.RobotHeading, gs.OurRobot.Velocity);
-            
+
             var gunAngleToEnemy = Global.XYToDegree(enemyNextPos.Item1, enemyNextPos.Item2, robot.X, robot.Y);
             var gunAngleDifference = gunAngleToEnemy - robot.GunHeading;
             var gunAngleDifferenceAbs = Math.Abs(gunAngleDifference);
