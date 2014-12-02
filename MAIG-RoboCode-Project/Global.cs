@@ -22,6 +22,8 @@
 
         public static readonly double SCORE_SURVIVAL_BONUS = 50;
 
+        public static readonly double MCTS_VISIT_THRESHOLD = 3;
+
         /// <summary>
         /// 
         /// Inspired by http://www.vcskicks.com/code-snippet/degree-to-xy.php

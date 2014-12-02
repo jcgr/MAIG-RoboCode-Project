@@ -1,7 +1,7 @@
-﻿using Robocode;
-
-namespace MAIG_RoboCode_Project
+﻿namespace MAIG_RoboCode_Project
 {
+    using Robocode;
+
     class MCTSRobot : Robot
     {
         /// <summary>
