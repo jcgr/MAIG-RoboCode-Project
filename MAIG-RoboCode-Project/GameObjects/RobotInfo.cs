@@ -241,8 +241,8 @@
         public double GetScore()
         {
             var score = 0.0;
-            score += this.ScoreList["bullet"] * Global.ROBOCODE_SCORE_PER_BULLET_DAMAGE;
-            score += this.ScoreList["survival"] * Global.ROBOCODE_SCORE_SURVIVAL_BONUS;
+            score += this.ScoreList["bullet"] * Global.SCORE_PER_BULLET_DAMAGE;
+            score += this.ScoreList["survival"] * Global.SCORE_SURVIVAL_BONUS;
             return score;
         }
     }

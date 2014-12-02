@@ -42,6 +42,10 @@
             }
         }
 
+        public static readonly double MCTS_ALLOWED_SEARCH_TIME = 40;
+
+        public static readonly double MCTS_MAX_ITERATIONS = 100;
+
         /// <summary>
         /// 
         /// Inspired by http://www.vcskicks.com/code-snippet/degree-to-xy.php
