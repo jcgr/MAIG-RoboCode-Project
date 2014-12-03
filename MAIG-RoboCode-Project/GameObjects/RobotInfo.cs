@@ -1,4 +1,4 @@
-﻿namespace MAIG_RoboCode_Project
+﻿namespace MAIG_RoboCode_Project.GameObjects
 {
     using System;
     using System.Collections.Generic;
@@ -44,7 +44,7 @@
         {
             get
             {
-                return !(GunHeat > 0.0);
+                return !(this.GunHeat > 0.0);
             }
         }
 
@@ -84,7 +84,10 @@
 
             var gunHeat = this.HeatAfterCooling(Global.COOLING_RATE);
             var projectileFired = ri.FirePower > 0 ? this.Shoot(ri.FirePower, ref gunHeat) : null;
-
+            if (projectileFired != null)
+            {
+                projectiles.Add(projectileFired);
+            }
 
             var damage = 0.0;
             var energy = this.NewEnergy(projectiles, enemyRobot, ref damage);
@@ -157,28 +160,6 @@
         private double NewVelocity(RobotInstructions ri)
         {
             return this.Velocity + ri.VelocityChange;
-
-            var backwards = ri.MoveDistance < 0.0 && this.Velocity < 0.0;
-
-            var cv = backwards ? Math.Abs(this.Velocity) : this.Velocity;
-            var md = backwards ? Math.Abs(ri.MoveDistance) : ri.MoveDistance;
-
-            if (md >= (cv + 1.0))
-            {
-                return backwards ? Math.Max(this.Velocity - 1, -8.0) : Math.Min(this.Velocity + 1, 8.0);
-            }
-
-            if (md >= cv)
-            {
-                return backwards ? Math.Max(ri.MoveDistance, -8.0) : Math.Min(ri.MoveDistance, 8.0);
-            }
-
-            if (cv > md && md > (cv - 2.0))
-            {
-                return backwards ? Math.Min(ri.MoveDistance, 8.0) : Math.Max(ri.MoveDistance, -8.0);
-            }
-
-            return backwards ? Math.Min(this.Velocity + 2.0, 8.0) : Math.Max(this.Velocity - 2.0, -8.0);
 
         }
 
@@ -256,9 +237,9 @@
             var score = 0.0;
             score += this.ScoreList["bullet"] * Global.SCORE_PER_BULLET_DAMAGE;
             score += this.ScoreList["survival"] * Global.SCORE_SURVIVAL_BONUS;
-            score += this.ScoreList["shootScore"];
-            score += this.ScoreList["movementScore"];
-            score += this.ScoreList["gunDirection"];
+            score += this.ScoreList["shootScore"] * Global.SCORE_SHOOT;
+            score += this.ScoreList["movementScore"] * Global.SCORE_MOVEMENT;
+            score += this.ScoreList["gunDirection"] * Global.SCORE_GUN_DIRECTION;
             return score;
         }
     }

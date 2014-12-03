@@ -2,15 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.SqlTypes;
     using System.Diagnostics;
-    using System.Linq;
+
+    using MAIG_RoboCode_Project.GameObjects;
 
     public class MCTS
     {
 
         public static void Main()
         {
+            // Test method
             var mcts = new MCTS();
 
             var us = new RobotInfo(100, 0, 25, 25, 0, 0, 0, 0, "US");
@@ -24,7 +25,7 @@
 
             Console.WriteLine("Post-search");
 
-            while (true) ;
+            Console.ReadLine();
         }
 
         /// <summary>

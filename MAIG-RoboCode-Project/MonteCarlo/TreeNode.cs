@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using MAIG_RoboCode_Project.GameObjects;
+
     public class TreeNode
     {
         public int Visits { get; private set; }

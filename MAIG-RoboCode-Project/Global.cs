@@ -4,49 +4,75 @@
 
     public static class Global
     {
-        private static Random rand;
+        #region Score Values
 
-        public static readonly double TOLERANCE = 1.0E-15;
+        public const double PLAYER_SCORE_WEIGHT = 1.0;
 
-        public static double COOLING_RATE = 0.1;
+        public const double ENEMY_SCORE_WEIGHT = 0.5;
 
-        public static readonly double MAX_ROBOT_ENERGY = 100; // TODO: Not sure if this is right; should look into it
+        public const double SCORE_PER_BULLET_DAMAGE = 1;
 
-        public static readonly double MAX_GUN_ROTATION = 20;
+        public const double SCORE_SURVIVAL_BONUS = 50;
 
-        public static readonly double GUN_TURN_INTERVAL = 10;
+        public const double SCORE_MOVEMENT = 1;
 
-        public static readonly double ROBOT_TURN_INTERVAL = 20;
+        public const double SCORE_GUN_DIRECTION = 0.1;
 
-        public static readonly double SIMULATION_MAX_ROBOT_ROTATION = 40;
-        
-        public static readonly double RADAR_TURN_INTERVAL = 20;
+        public const double SCORE_SHOOT = 0.3;
 
-        public static readonly double SIMULATION_MAX_RADAR_ROTATION = 40;
+        #endregion
 
-        public static readonly double MAX_RADAR_ROTATION = 45;
+        #region Simulation Values & Intervals
+
+        public const double STARTING_ROBOT_ENERGY = 100;
+
+        public const double MAX_GUN_ROTATION = 20;
+
+        public const double GUN_TURN_INTERVAL = 10;
+
+        public const double ROBOT_TURN_INTERVAL = 20;
+
+        public const double SIMULATION_MAX_ROBOT_ROTATION = 40;
+
+        public const double RADAR_TURN_INTERVAL = 20;
+
+        public const double SIMULATION_MAX_RADAR_ROTATION = 40;
+
+        public const double MAX_RADAR_ROTATION = 45;
+
+        #endregion
+
+        #region Robocode Values
+
+        public const double COOLING_RATE = 0.1;
 
         public static double BF_WIDTH = 100;
 
         public static double BF_HEIGHT = 100;
 
-        public static readonly double SCORE_PER_BULLET_DAMAGE = 1;
+        #endregion
 
-        public static readonly double SCORE_SURVIVAL_BONUS = 50;
+        #region Privates
 
-        public static readonly double PLAYER_SCORE_WEIGHT = 1.0;
-        
-        public static readonly double ENEMY_SCORE_WEIGHT = 0.5;
+        private static Random rand;
 
-        public static readonly double MCTS_VISIT_THRESHOLD = 2;
+        #endregion
 
-        public static readonly double MCTS_EXPLORATION_CONSTANT = 10;
+        #region MCTS Constants
 
-        public static readonly double MCTS_MAX_PATH_TO_ROOT = 10;
+        public const double MCTS_VISIT_THRESHOLD = 2;
 
-        public static readonly double MCTS_ALLOWED_SEARCH_TIME = 1000;
+        public const double MCTS_EXPLORATION_CONSTANT = 10;
 
-        public static readonly double MCTS_MAX_ITERATIONS = 500;
+        public const double MCTS_MAX_PATH_TO_ROOT = 10;
+
+        public const double MCTS_ALLOWED_SEARCH_TIME = 1000;
+
+        public const double MCTS_MAX_ITERATIONS = 500;
+
+        #endregion
+
+        public const double TOLERANCE = 1.0E-15;
 
         public static Random Random
         {
@@ -56,13 +82,15 @@
             }
         }
 
+        #region Math Methods
+
         /// <summary>
-        /// 
+        /// Calculates a point based on input degrees and radius.
         /// Inspired by http://www.vcskicks.com/code-snippet/degree-to-xy.php
         /// </summary>
-        /// <param name="degrees"></param>
-        /// <param name="radius"></param>
-        /// <returns></returns>
+        /// <param name="degrees">The degree from the origin.</param>
+        /// <param name="radius">The distance from the origin.</param>
+        /// <returns>The calculated point.</returns>
         public static Tuple<double, double> DegreeToXY(double degrees, double radius)
         {
             // Change from compass degrees (Robocode) to x/y degrees
@@ -82,14 +110,14 @@
         }
 
         /// <summary>
-        /// 
+        /// Calculates a degree based on two points.
         /// Inspired by http://www.vcskicks.com/code-snippet/degree-to-xy.php
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="originX"></param>
-        /// <param name="originY"></param>
-        /// <returns></returns>
+        /// <param name="x">x-value of target.</param>
+        /// <param name="y">y-value of target.</param>
+        /// <param name="originX">x-value of origin.</param>
+        /// <param name="originY">y-value of origin.</param>
+        /// <returns>The angle between the two points.</returns>
         public static double XYToDegree(double x, double y, double originX, double originY)
         {
             var deltaX = originX - x;
@@ -101,5 +129,7 @@
             var angle = 180.0 - degreeAngle;
             return (angle + 90) % 360;
         }
+
+        #endregion
     }
 }

@@ -1,96 +1,28 @@
-﻿namespace MAIG_RoboCode_Project
+﻿namespace MAIG_RoboCode_Project.GameObjects
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Instructions used for robots in the Monte-Carlo Tree Search algorithm.
+    /// </summary>
     public class RobotInstructions
     {
+        /// <summary>
+        /// The list of possible instructions.
+        /// </summary>
         private static List<RobotInstructions> listOfInstructions;
 
-        public static List<RobotInstructions> ListOfInstructions
-        {
-            get
-            {
-                if (listOfInstructions != null)
-                {
-                    return listOfInstructions;
-                }
-
-                var list = new List<RobotInstructions>();
-                for (var vc = -2; vc < 2; vc++)
-                {
-                    list.Add(new RobotInstructions(0, 0, 0, 0, 0, vc)); // Don't shoot
-                    list.Add(new RobotInstructions(0, 0, 0, 0, 1, vc)); // Shoot
-                }/*
-
-                for (var rd = -Global.SIMULATION_MAX_ROBOT_ROTATION;
-                     rd < Global.SIMULATION_MAX_ROBOT_ROTATION;
-                     rd += Global.ROBOT_TURN_INTERVAL)
-                {
-                    list.Add(new RobotInstructions(0, rd, 0, 0, 0)); // Don't shoot
-                    list.Add(new RobotInstructions(0, rd, 0, 0, 1)); // Shoot
-                }
-                for (var gd = -Global.MAX_GUN_ROTATION; gd < Global.MAX_GUN_ROTATION; gd += Global.GUN_TURN_INTERVAL)
-                {
-                    list.Add(new RobotInstructions(0, 0, gd, 0, 0)); // Don't shoot
-                    list.Add(new RobotInstructions(0, 0, gd, 0, 1)); // Shoot
-                }
-                for (var radard = -Global.SIMULATION_MAX_RADAR_ROTATION; radard < Global.SIMULATION_MAX_RADAR_ROTATION; radard += Global.RADAR_TURN_INTERVAL)
-                {
-                    list.Add(new RobotInstructions(0, 0, 0, radard, 0)); // Don't shoot
-                    list.Add(new RobotInstructions(0, 0, 0, radard, 1)); // Shoot
-                }*/
-
-                listOfInstructions = list;
-                
-                Console.WriteLine("Actions list size: " + listOfInstructions.Count);
-                return listOfInstructions;
-
-                /*
-                if (listOfInstructions != null)
-                {
-                    return listOfInstructions;
-                }
-
-                var list = new List<RobotInstructions>();
-                for (var vc = -2; vc < 2; vc++)
-                {
-                    for (var rd = -Global.SIMULATION_MAX_ROBOT_ROTATION; rd < Global.SIMULATION_MAX_ROBOT_ROTATION; rd += Global.ROBOT_TURN_INTERVAL)
-                    {
-                        for (var gd = -Global.MAX_GUN_ROTATION; gd < Global.MAX_GUN_ROTATION; gd += Global.GUN_TURN_INTERVAL)
-                        {
-                            for (var radard = -Global.SIMULATION_MAX_RADAR_ROTATION; radard < Global.SIMULATION_MAX_RADAR_ROTATION; radard += Global.RADAR_TURN_INTERVAL)
-                            {
-                                list.Add(new RobotInstructions(0, rd, gd, radard, 0, vc)); // Don't shoot
-                                list.Add(new RobotInstructions(0, rd, gd, radard, 1, vc)); // Shoot
-                            }
-                        }
-                    }
-                }
-
-                listOfInstructions = list;
-                return listOfInstructions;
-                 * */
-            }
-
-            set
-            {
-                listOfInstructions = value;
-            }
-        }
-        public double MoveDistance { get; set; }
-
-        public double RobotDegrees { get; private set; }
-
-        public double GunDegrees { get; private set; }
-
-        public double RadarDegrees { get; private set; }
-
-        public double FirePower { get; private set; }
-
-        public double VelocityChange { get; private set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RobotInstructions"/> class.
+        /// </summary>
+        /// <param name="moveDistance"> The distance to move. </param>
+        /// <param name="robotDegrees"> The amount of degrees to turn the robot. </param>
+        /// <param name="gunDegrees"> The amount of degrees to turn the gun. </param>
+        /// <param name="radarDegrees"> The amount of degrees to turn the radar. </param>
+        /// <param name="firePower"> The amount of power to shoot with (0.0 indicates no firing). </param>
+        /// <param name="velocityChange"> The amount to change the velocity. </param>
         public RobotInstructions(double moveDistance, double robotDegrees, double gunDegrees, double radarDegrees, double firePower, double velocityChange = 0)
         {
             this.MoveDistance = moveDistance;
@@ -101,15 +33,107 @@
             this.VelocityChange = velocityChange;
         }
 
+        /// <summary>
+        /// Gets the list of possible instructions.
+        /// </summary>
+        public static List<RobotInstructions> ListOfInstructions
+        {
+            get
+            {
+                // If already generated, do not do so again.
+                if (listOfInstructions != null)
+                {
+                    return listOfInstructions;
+                }
+
+                var list = new List<RobotInstructions>();
+
+                // Generate velocity change instructions
+                for (var vc = -2; vc < 2; vc++)
+                {
+                    list.Add(new RobotInstructions(0, 0, 0, 0, 0, vc)); // Don't shoot
+                    list.Add(new RobotInstructions(0, 0, 0, 0, 1, vc)); // Shoot
+                }
+
+                // Generate robot rotation instructions
+                for (var rd = -Global.SIMULATION_MAX_ROBOT_ROTATION;
+                     rd < Global.SIMULATION_MAX_ROBOT_ROTATION;
+                     rd += Global.ROBOT_TURN_INTERVAL)
+                {
+                    list.Add(new RobotInstructions(0, rd, 0, 0, 0)); // Don't shoot
+                    list.Add(new RobotInstructions(0, rd, 0, 0, 1)); // Shoot
+                }
+
+                // Generate gun rotation instructions
+                for (var gd = -Global.MAX_GUN_ROTATION; gd < Global.MAX_GUN_ROTATION; gd += Global.GUN_TURN_INTERVAL)
+                {
+                    list.Add(new RobotInstructions(0, 0, gd, 0, 0)); // Don't shoot
+                    list.Add(new RobotInstructions(0, 0, gd, 0, 1)); // Shoot
+                }
+
+                // Generate radar rotation instructions
+                for (var radard = -Global.SIMULATION_MAX_RADAR_ROTATION; radard < Global.SIMULATION_MAX_RADAR_ROTATION; radard += Global.RADAR_TURN_INTERVAL)
+                {
+                    list.Add(new RobotInstructions(0, 0, 0, radard, 0)); // Don't shoot
+                    list.Add(new RobotInstructions(0, 0, 0, radard, 1)); // Shoot
+                }
+
+                listOfInstructions = list;
+                return listOfInstructions;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the distance to move.
+        /// </summary>
+        public double MoveDistance { get; set; }
+
+        /// <summary>
+        /// Gets the amount of degrees to rotate the robot.
+        /// </summary>
+        public double RobotDegrees { get; private set; }
+
+        /// <summary>
+        /// Gets the amount of degrees to rotate the gun.
+        /// </summary>
+        public double GunDegrees { get; private set; }
+
+        /// <summary>
+        /// Gets the amount of degrees to rotate the radar.
+        /// </summary>
+        public double RadarDegrees { get; private set; }
+
+        /// <summary>
+        /// Gets the amount of power to shoot with (0.0 power indicates no firing).
+        /// </summary>
+        public double FirePower { get; private set; }
+
+        /// <summary>
+        /// Gets the amount to change the velocity.
+        /// </summary>
+        public double VelocityChange { get; private set; }
+
+        /// <summary>
+        /// Gets the list of possible instructions based on current velocity and if the robot can shoot.
+        /// </summary>
+        /// <param name="velocity">The current velocity of the robot.</param>
+        /// <param name="canShoot">Whether the robot can shoot or not.</param>
+        /// <returns>The list of possible instructions.</returns>
         public static List<RobotInstructions> GetListOfInstructions(double velocity, bool canShoot)
         {
             return ListOfInstructions.Where(ri => IsInstructionPossible(velocity, canShoot, ri)).ToList();
         }
 
+        /// <summary>
+        /// Checks if an instruction can be performed based on the current velocity and if the robot can shoot.
+        /// </summary>
+        /// <param name="velocity">The current velocity of the robot.</param>
+        /// <param name="canShoot">Whether the robot can shoot or not.</param>
+        /// <param name="ri">The robot instructions to check.</param>
+        /// <returns></returns>
         public static bool IsInstructionPossible(double velocity, bool canShoot, RobotInstructions ri)
         {
-            //return true; //TODO: BAD HACK!
-
+            // return true; //TODO: BAD HACK!
             if ((velocity < 0 && ri.VelocityChange == -2.0)
                 || (velocity > 0 && ri.VelocityChange == 2.0))
             {

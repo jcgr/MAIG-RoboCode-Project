@@ -2,36 +2,46 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.SqlTypes;
     using System.Drawing;
 
+    using MAIG_RoboCode_Project.GameObjects;
     using MAIG_RoboCode_Project.MonteCarlo;
 
     using Robocode;
 
-    class MCTSRobot : Robot
+    /// <summary>
+    /// Robocode robot based on Monte-Carlo Tree Search.
+    /// </summary>
+    public class MCTSRobot : Robot
     {
         /// <summary>
         /// Gets or sets the enemy robot.
         /// </summary>
         private RobotInfo Enemy { get; set; }
 
+        /// <summary>
+        /// Gets or sets the projectiles that are currently assumed to be in the air.
+        /// </summary>
         private List<Projectile> Projectiles { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the robot should scan.
+        /// </summary>
         private bool ShouldScan { get; set; }
 
-        // The main method of your robot containing robot logics
+        // The main method of the robot containing robot logics
         public override void Run()
         {
-            this.Ahead(1);
+            Global.BF_WIDTH = this.BattleFieldWidth;
+            Global.BF_HEIGHT = this.BattleFieldHeight;
+
             ShouldScan = true;
             this.RadarColor = Color.Blue;
             this.ScanColor = Color.Yellow;
+
             var mcts = new MCTS();
             this.Projectiles = new List<Projectile>();
-            Global.BF_WIDTH = this.BattleFieldWidth;
-            Global.BF_HEIGHT = this.BattleFieldHeight;
-            this.Enemy = new RobotInfo(Global.MAX_ROBOT_ENERGY, 0, Global.BF_WIDTH / 2.0, Global.BF_HEIGHT / 2.0, 0, 0, 0, 0, "Enemy");
+            this.Enemy = GenerateAssumedEnemy();
 
             while (true)
             {
@@ -73,6 +83,7 @@
                 if (i.FirePower != 0 && this.GunHeat >= 0)
                 {
                     this.Fire(i.FirePower);
+                    this.Projectiles.Add(new Projectile(this.X, this.Y, this.GunHeading, i.FirePower, true, this.Name));
                     Console.WriteLine("fire power" + i.FirePower);
                 }
             }
@@ -87,8 +98,22 @@
             var enemyPosition = Global.DegreeToXY(angle, e.Distance);
 
             this.Enemy = new RobotInfo(e.Energy, e.Velocity, enemyPosition.Item1, enemyPosition.Item2, e.Heading, e.Heading, e.Heading, 0, "Enemy");
+        }
 
-            
+        /// <summary>
+        /// Generates info about an enemy based on initial conditions.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="RobotInfo"/> of the enemy.
+        /// </returns>
+        private static RobotInfo GenerateAssumedEnemy()
+        {
+            const double Zero = 0.0;
+
+            var x = Global.BF_WIDTH / 2.0;
+            var y = Global.BF_HEIGHT / 2.0;
+
+            return new RobotInfo(Global.STARTING_ROBOT_ENERGY, 0, x, y, Zero, Zero, Zero, Zero, "Enemy");
         }
     }
 }
