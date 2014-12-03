@@ -49,7 +49,7 @@
             }
 
             TreeNode bestChild = null;
-            double bestValue = -10000;
+            double bestValue = double.MinValue;
 
             // Calculate the UCT value of all this node's children and choose the best to return.
             foreach (TreeNode child in this.Children)
@@ -108,7 +108,6 @@
 
         public bool IsTerminalNode()
         {
-            //Console.WriteLine((this.Gamestate.OurRobot != null) + ", " + (this.Gamestate.EnemyRobot != null) + ", " + Global.MCTS_MAX_PATH_TO_ROOT);
             var robotDead = this.Gamestate.OurRobot.Status == RoboStatus.Destroyed
                             || this.Gamestate.EnemyRobot.Status == RoboStatus.Destroyed;
 

@@ -38,15 +38,15 @@
         
         public static readonly double ENEMY_SCORE_WEIGHT = 0.5;
 
-        public static readonly double MCTS_VISIT_THRESHOLD = 3;
+        public static readonly double MCTS_VISIT_THRESHOLD = 2;
 
         public static readonly double MCTS_EXPLORATION_CONSTANT = 10;
 
-        public static readonly double MCTS_MAX_PATH_TO_ROOT = 50;
+        public static readonly double MCTS_MAX_PATH_TO_ROOT = 10;
 
-        public static readonly double MCTS_ALLOWED_SEARCH_TIME = 5000;
+        public static readonly double MCTS_ALLOWED_SEARCH_TIME = 1000;
 
-        public static readonly double MCTS_MAX_ITERATIONS = 50000;
+        public static readonly double MCTS_MAX_ITERATIONS = 500;
 
         public static Random Random
         {

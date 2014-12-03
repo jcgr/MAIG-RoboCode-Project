@@ -1,5 +1,6 @@
 ﻿namespace MAIG_RoboCode_Project
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -41,6 +42,26 @@
             if (ourRobot.Status == RoboStatus.Destroyed && enemyRobot.Status != RoboStatus.Destroyed)
             {
                 enemyRobot.ScoreList["survival"] += 1;
+            }
+
+            var gunAngleToEnemy = Global.XYToDegree(enemyRobot.X, enemyRobot.Y, ourRobot.X, ourRobot.Y);
+            var angle1 = Math.Abs(gunAngleToEnemy - ourRobot.GunHeading);
+            var angle2 = Math.Abs(ourRobot.GunHeading - gunAngleToEnemy);
+
+            ourRobot.ScoreList["gunDirection"] = angle1 < angle2 ? -angle1 / 10 : -angle2 / 10;
+
+            if (Math.Abs(ourRobot.Velocity) <= Math.Abs(gs.OurRobot.Velocity))
+            {
+                ourRobot.ScoreList["movementScore"] -= 1;
+            }
+            else
+            {
+                ourRobot.ScoreList["movementScore"] += 1.5;
+            }
+
+            if (ours.FirePower > 0 && gs.OurRobot.CanFire)
+            {
+                ourRobot.ScoreList["shootScore"] += 1;
             }
 
             return new Gamestate(ourRobot, enemyRobot, movedProjectiles, ours);

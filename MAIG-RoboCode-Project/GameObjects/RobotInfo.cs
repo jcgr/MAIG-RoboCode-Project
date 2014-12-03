@@ -97,11 +97,12 @@
 
             status = energy <= 0 && status != RoboStatus.Destroyed ? RoboStatus.Disabled : RoboStatus.Healthy;
 
-            var gunHeading = this.NewGunHeading(ri.GunDegrees);
-            var radarHeading = this.NewRadarHeading(ri.RadarDegrees);
+            var gunHeading = this.NewGunHeading(ri.GunDegrees) + ri.RobotDegrees;
+            var radarHeading = this.NewRadarHeading(ri.RadarDegrees) + ri.RobotDegrees + ri.GunDegrees;
             var robotHeading = this.NewHeading(ri.RobotDegrees);
 
             var velocity = this.NewVelocity(ri);
+            ri.MoveDistance = velocity;
 
             var newPos = this.NextPosition(robotHeading, velocity);
 
@@ -111,22 +112,32 @@
             return new RobotInfo(energy, velocity, x, y, robotHeading, gunHeading, radarHeading, gunHeat, this.Name, status, scores);
         }
 
-        public static Dictionary<string, double> CreateScoreList(double survival, double lastSurvivor, double bullet)
+        public static Dictionary<string, double> CreateScoreList(double survival = 0, double lastSurvivor = 0, double bullet = 0, double gunDirection = 0, double shootScore = 0)
         {
-            var newList = new Dictionary<string, double>();
-            newList.Add("survival", survival);
-            newList.Add("last", lastSurvivor);
-            newList.Add("bullet", bullet);
+            var newList = new Dictionary<string, double>
+                              {
+                                  { "survival", survival },
+                                  { "last", lastSurvivor },
+                                  { "bullet", bullet },
+                                  { "movementScore", bullet },
+                                  {"gunDirection", gunDirection },
+                                  {"shootScore", shootScore}
+                              };
 
             return newList;
         }
 
         public static Dictionary<string, double> CopyScoreList(Dictionary<string, double> scoreList)
         {
-            var newList = new Dictionary<string, double>();
-            newList.Add("survival", scoreList["survival"]);
-            newList.Add("last", scoreList["last"]);
-            newList.Add("bullet", scoreList["bullet"]);
+            var newList = new Dictionary<string, double>
+                              {
+                                  { "survival", scoreList["survival"] },
+                                  { "last", scoreList["last"] },
+                                  { "bullet", scoreList["bullet"] },
+                                  { "movementScore", scoreList["movementScore"] },
+                                  { "shootScore", scoreList["shootScore"] },
+                                  { "gunDirection", scoreList["gunDirection"] }
+                              };
 
             return newList;
         }
@@ -145,6 +156,8 @@
 
         private double NewVelocity(RobotInstructions ri)
         {
+            return this.Velocity + ri.VelocityChange;
+
             var backwards = ri.MoveDistance < 0.0 && this.Velocity < 0.0;
 
             var cv = backwards ? Math.Abs(this.Velocity) : this.Velocity;
@@ -243,6 +256,9 @@
             var score = 0.0;
             score += this.ScoreList["bullet"] * Global.SCORE_PER_BULLET_DAMAGE;
             score += this.ScoreList["survival"] * Global.SCORE_SURVIVAL_BONUS;
+            score += this.ScoreList["shootScore"];
+            score += this.ScoreList["movementScore"];
+            score += this.ScoreList["gunDirection"];
             return score;
         }
     }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Data.SqlTypes;
+    using System.Drawing;
 
     using MAIG_RoboCode_Project.MonteCarlo;
 
@@ -22,14 +23,10 @@
         // The main method of your robot containing robot logics
         public override void Run()
         {
-            this.Ahead(100);
+            this.Ahead(1);
             ShouldScan = true;
-            while(ShouldScan)
-            {
-                this.TurnRadarRight(45);
-                Console.WriteLine("Should scan");
-            }
-
+            this.RadarColor = Color.Blue;
+            this.ScanColor = Color.Yellow;
             var mcts = new MCTS();
             this.Projectiles = new List<Projectile>();
             Global.BF_WIDTH = this.BattleFieldWidth;
@@ -38,8 +35,15 @@
 
             while (true)
             {
+                while (ShouldScan)
+                {
+                    this.TurnGunRight(20);
+                }
+
                 var gs = new Gamestate(new RobotInfo(this), Enemy, Projectiles, null);
+
                 var tn = mcts.Search(gs);
+
                 var i = tn.Gamestate.Instructions;
 
                 if (i.RobotDegrees != 0)
@@ -66,26 +70,25 @@
                     Console.WriteLine("move distance " + i.MoveDistance);
                 }
 
-                if (i.FirePower != 0)
+                if (i.FirePower != 0 && this.GunHeat >= 0)
                 {
                     this.Fire(i.FirePower);
                     Console.WriteLine("fire power" + i.FirePower);
                 }
-
-                Console.WriteLine("en skilder");
             }
         }
 
         // Robot event handler, when the robot sees another robot
         public override void OnScannedRobot(ScannedRobotEvent e)
         {
+            this.ShouldScan = false;
             var angle = ((this.Heading + e.Bearing) + 360) % 360;
 
             var enemyPosition = Global.DegreeToXY(angle, e.Distance);
 
             this.Enemy = new RobotInfo(e.Energy, e.Velocity, enemyPosition.Item1, enemyPosition.Item2, e.Heading, e.Heading, e.Heading, 0, "Enemy");
 
-            this.ShouldScan = false;
+            
         }
     }
 }

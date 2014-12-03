@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.SqlTypes;
     using System.Diagnostics;
+    using System.Linq;
 
     public class MCTS
     {
@@ -17,6 +18,7 @@
 
             var gamestate = new Gamestate(us, them, new List<Projectile>(), null);
 
+            
             Console.WriteLine("Pre-search");
             mcts.Search(gamestate);
 
@@ -55,7 +57,7 @@
 			    var currNode = this.Selection();
 
 			    // Playout / simulation
-			    var tempNode = this.Playout(currNode);
+			    var tempNode = this.Playout(currNode);  
 
 			    // Backpropagation
 			    this.Backpropagate(currNode, tempNode);
@@ -63,7 +65,7 @@
 		    }
 
 		    TreeNode bestNode = null;
-		    double bestNodeScore = -100;
+		    double bestNodeScore = double.MinValue;
 
 		    foreach (var tn in this.Root.Children)
 		    {

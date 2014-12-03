@@ -6,12 +6,48 @@
 
     public class RobotInstructions
     {
-        private static List<RobotInstructions> listOfInstructions; 
+        private static List<RobotInstructions> listOfInstructions;
 
         public static List<RobotInstructions> ListOfInstructions
         {
             get
             {
+                if (listOfInstructions != null)
+                {
+                    return listOfInstructions;
+                }
+
+                var list = new List<RobotInstructions>();
+                for (var vc = -2; vc < 2; vc++)
+                {
+                    list.Add(new RobotInstructions(0, 0, 0, 0, 0, vc)); // Don't shoot
+                    list.Add(new RobotInstructions(0, 0, 0, 0, 1, vc)); // Shoot
+                }/*
+
+                for (var rd = -Global.SIMULATION_MAX_ROBOT_ROTATION;
+                     rd < Global.SIMULATION_MAX_ROBOT_ROTATION;
+                     rd += Global.ROBOT_TURN_INTERVAL)
+                {
+                    list.Add(new RobotInstructions(0, rd, 0, 0, 0)); // Don't shoot
+                    list.Add(new RobotInstructions(0, rd, 0, 0, 1)); // Shoot
+                }
+                for (var gd = -Global.MAX_GUN_ROTATION; gd < Global.MAX_GUN_ROTATION; gd += Global.GUN_TURN_INTERVAL)
+                {
+                    list.Add(new RobotInstructions(0, 0, gd, 0, 0)); // Don't shoot
+                    list.Add(new RobotInstructions(0, 0, gd, 0, 1)); // Shoot
+                }
+                for (var radard = -Global.SIMULATION_MAX_RADAR_ROTATION; radard < Global.SIMULATION_MAX_RADAR_ROTATION; radard += Global.RADAR_TURN_INTERVAL)
+                {
+                    list.Add(new RobotInstructions(0, 0, 0, radard, 0)); // Don't shoot
+                    list.Add(new RobotInstructions(0, 0, 0, radard, 1)); // Shoot
+                }*/
+
+                listOfInstructions = list;
+                
+                Console.WriteLine("Actions list size: " + listOfInstructions.Count);
+                return listOfInstructions;
+
+                /*
                 if (listOfInstructions != null)
                 {
                     return listOfInstructions;
@@ -35,6 +71,7 @@
 
                 listOfInstructions = list;
                 return listOfInstructions;
+                 * */
             }
 
             set
@@ -42,7 +79,7 @@
                 listOfInstructions = value;
             }
         }
-        public double MoveDistance { get; private set; }
+        public double MoveDistance { get; set; }
 
         public double RobotDegrees { get; private set; }
 
@@ -71,7 +108,9 @@
 
         public static bool IsInstructionPossible(double velocity, bool canShoot, RobotInstructions ri)
         {
-            if ((velocity < 0 && ri.VelocityChange == -2.0) 
+            //return true; //TODO: BAD HACK!
+
+            if ((velocity < 0 && ri.VelocityChange == -2.0)
                 || (velocity > 0 && ri.VelocityChange == 2.0))
             {
                 return false;
@@ -153,22 +192,24 @@
             }
             else
             {
-                distance = robot.Velocity;
+                distance = 0; //TODO: Bad hack? Was robot.Velocity before
             }
 
-            var robotDegrees = robot.RobotHeading;
+            var robotDegrees = 0; // TODO: Bad hack? Was robot.RobotHeading before
 
-            var playerRobotInSight = false;
             var gunDegrees = 0.0;
             var enemyNextPos = gs.OurRobot.NextPosition(gs.OurRobot.RobotHeading, gs.OurRobot.Velocity);
 
             var gunAngleToEnemy = Global.XYToDegree(enemyNextPos.Item1, enemyNextPos.Item2, robot.X, robot.Y);
-            var gunAngleDifference = gunAngleToEnemy - robot.GunHeading;
+            
+            var angle1 = gunAngleToEnemy - robot.GunHeading;
+            var angle2 = robot.GunHeading - gunAngleToEnemy;
+
+            var gunAngleDifference = angle1 < angle2 ? angle1 : angle2;
             var gunAngleDifferenceAbs = Math.Abs(gunAngleDifference);
             if (gunAngleDifferenceAbs < 5)
             {
                 gunDegrees = 0;
-                playerRobotInSight = true;
             }
             else if (gunAngleDifferenceAbs < 20)
             {
@@ -196,7 +237,7 @@
                 radarDegrees = radarAngleDifference < 0.0 ? -Global.MAX_RADAR_ROTATION : Global.MAX_RADAR_ROTATION;
             }
 
-            var firePower = (playerRobotInSight && gs.EnemyRobot.CanFire) ? 1.0 : 0.0;
+            var firePower = (Math.Abs(gunDegrees) < Global.TOLERANCE && gs.EnemyRobot.CanFire) ? 1.0 : 0.0;
 
             return new RobotInstructions(distance, robotDegrees, gunDegrees, radarDegrees, firePower);
         }
