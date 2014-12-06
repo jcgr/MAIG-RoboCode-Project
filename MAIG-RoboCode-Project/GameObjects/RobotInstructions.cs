@@ -9,11 +9,14 @@
     /// </summary>
     public class RobotInstructions
     {
+        #region Privates
         /// <summary>
         /// The list of possible instructions.
         /// </summary>
         private static List<RobotInstructions> listOfInstructions;
+        #endregion
 
+        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="RobotInstructions"/> class.
         /// </summary>
@@ -32,7 +35,9 @@
             this.FirePower = firePower;
             this.VelocityChange = velocityChange;
         }
+        #endregion
 
+        #region Properties
         /// <summary>
         /// Gets the list of possible instructions.
         /// </summary>
@@ -56,23 +61,23 @@
                 }
 
                 // Generate robot rotation instructions
-                for (var rd = -Global.SIMULATION_MAX_ROBOT_ROTATION;
-                     rd < Global.SIMULATION_MAX_ROBOT_ROTATION;
-                     rd += Global.ROBOT_TURN_INTERVAL)
+                for (var rd = -Global.SimulationMaxRobotRotation;
+                     rd < Global.SimulationMaxRobotRotation;
+                     rd += Global.RobotTurnInterval)
                 {
                     list.Add(new RobotInstructions(0, rd, 0, 0, 0)); // Don't shoot
                     list.Add(new RobotInstructions(0, rd, 0, 0, 1)); // Shoot
                 }
 
                 // Generate gun rotation instructions
-                for (var gd = -Global.MAX_GUN_ROTATION; gd < Global.MAX_GUN_ROTATION; gd += Global.GUN_TURN_INTERVAL)
+                for (var gd = -Global.MaxGunRotation; gd < Global.MaxGunRotation; gd += Global.GunTurnInterval)
                 {
                     list.Add(new RobotInstructions(0, 0, gd, 0, 0)); // Don't shoot
                     list.Add(new RobotInstructions(0, 0, gd, 0, 1)); // Shoot
                 }
 
                 // Generate radar rotation instructions
-                for (var radard = -Global.SIMULATION_MAX_RADAR_ROTATION; radard < Global.SIMULATION_MAX_RADAR_ROTATION; radard += Global.RADAR_TURN_INTERVAL)
+                for (var radard = -Global.SimulationMaxRadarRotation; radard < Global.SimulationMaxRadarRotation; radard += Global.RadarTurnInterval)
                 {
                     list.Add(new RobotInstructions(0, 0, 0, radard, 0)); // Don't shoot
                     list.Add(new RobotInstructions(0, 0, 0, radard, 1)); // Shoot
@@ -112,7 +117,9 @@
         /// Gets the amount to change the velocity.
         /// </summary>
         public double VelocityChange { get; private set; }
+        #endregion
 
+        #region Static Methods
         /// <summary>
         /// Gets the list of possible instructions based on current velocity and if the robot can shoot.
         /// </summary>
@@ -130,18 +137,17 @@
         /// <param name="velocity">The current velocity of the robot.</param>
         /// <param name="canShoot">Whether the robot can shoot or not.</param>
         /// <param name="ri">The robot instructions to check.</param>
-        /// <returns></returns>
+        /// <returns>True if the instruction can be performed with the current state; false if not.</returns>
         public static bool IsInstructionPossible(double velocity, bool canShoot, RobotInstructions ri)
         {
-            // return true; //TODO: BAD HACK!
-            if ((velocity < 0 && ri.VelocityChange == -2.0)
-                || (velocity > 0 && ri.VelocityChange == 2.0))
+            if ((velocity < 0 && ri.VelocityChange < -1.0)
+                || (velocity > 0 && ri.VelocityChange > 1.0))
             {
                 return false;
             }
 
-            if ((velocity == 8.0 && ri.VelocityChange > 0.0)
-                || (velocity == -8.0 && ri.VelocityChange < 0.0))
+            if ((velocity >= 8.0 && ri.VelocityChange > 0.0)
+                || (velocity <= -8.0 && ri.VelocityChange < 0.0))
             {
                 return false;
             }
@@ -156,19 +162,24 @@
             return !(Math.Abs(ri.RobotDegrees) > maxDegree);
         }
 
+        /// <summary>
+        /// Gets the instructions for the enemy robot in a specific gamestate.
+        /// </summary>
+        /// <param name="gs">The gamestate to get instructions for.</param>
+        /// <param name="projectiles">The next tick of all the projectiles from gamestate gs.</param>
+        /// <returns>The instructions for the enemy robot.</returns>
         public static RobotInstructions GetEnemyInstructions(Gamestate gs, List<Projectile> projectiles)
         {
             var robot = gs.EnemyRobot;
-            var distance = robot.Velocity;
+            var velocityChange = robot.Velocity;
 
             var nextPos = robot.NextPosition(robot.RobotHeading, robot.Velocity);
             if (
                 projectiles.Any(
                     p =>
-                    (Math.Abs(p.X - nextPos.Item1) < Global.TOLERANCE)
-                    && (Math.Abs(p.Y - nextPos.Item2) < Global.TOLERANCE)))
+                    (Math.Abs(p.X - nextPos.Item1) < Global.Tolerance)
+                    && (Math.Abs(p.Y - nextPos.Item2) < Global.Tolerance)))
             {
-
                 if (robot.Velocity < 0.0)
                 {
                     var accelerate = robot.NextPosition(robot.RobotHeading, Math.Max(robot.Velocity - 1, -8.0));
@@ -176,18 +187,18 @@
                     if (
                         projectiles.Any(
                             p =>
-                            (Math.Abs(p.X - accelerate.Item1) < Global.TOLERANCE)
-                            && (Math.Abs(p.Y - accelerate.Item2) < Global.TOLERANCE)))
+                            (Math.Abs(p.X - accelerate.Item1) < Global.Tolerance)
+                            && (Math.Abs(p.Y - accelerate.Item2) < Global.Tolerance)))
                     {
-                        distance = Math.Max(robot.Velocity - 1, -8.0);
+                        velocityChange = robot.Velocity - 1.0 < -8.0 ? 0 : -1;
                     }
                     else if (projectiles.Any(
                             p =>
-                            (Math.Abs(p.X - decelerate.Item1) < Global.TOLERANCE)
-                            && (Math.Abs(p.Y - decelerate.Item2) < Global.TOLERANCE)))
+                            (Math.Abs(p.X - decelerate.Item1) < Global.Tolerance)
+                            && (Math.Abs(p.Y - decelerate.Item2) < Global.Tolerance)))
                     {
                         {
-                            distance = Math.Min(robot.Velocity + 2, 8.0);
+                            velocityChange = robot.Velocity + 2.0 > 8.0 ? 0 : 2;
                         }
                     }
                 }
@@ -198,30 +209,34 @@
                     if (
                         projectiles.Any(
                             p =>
-                            (Math.Abs(p.X - accelerate.Item1) < Global.TOLERANCE)
-                            && (Math.Abs(p.Y - accelerate.Item2) < Global.TOLERANCE)))
+                            (Math.Abs(p.X - accelerate.Item1) < Global.Tolerance)
+                            && (Math.Abs(p.Y - accelerate.Item2) < Global.Tolerance)))
                     {
-                        distance = Math.Min(robot.Velocity + 1, 8.0);
+                        velocityChange = robot.Velocity + 1.0 > 8.0 ? 0 : 1;
                     }
                     else if (projectiles.Any(
                             p =>
-                            (Math.Abs(p.X - decelerate.Item1) < Global.TOLERANCE)
-                            && (Math.Abs(p.Y - decelerate.Item2) < Global.TOLERANCE)))
+                            (Math.Abs(p.X - decelerate.Item1) < Global.Tolerance)
+                            && (Math.Abs(p.Y - decelerate.Item2) < Global.Tolerance)))
                     {
                         {
-                            distance = Math.Max(robot.Velocity - 2, -8.0);
+                            velocityChange = robot.Velocity - 2.0 < -8.0 ? 0 : -2;
                         }
                     }
                 }
             }
             else
             {
-                distance = 0; //TODO: Bad hack? Was robot.Velocity before
+                velocityChange = 0; // TODO: Bad hack? Was robot.Velocity before
+                if (Global.Random.Next(5) == 0)
+                {
+                    velocityChange = Global.Random.Next(3) - 2;
+                }
             }
 
-            var robotDegrees = 0; // TODO: Bad hack? Was robot.RobotHeading before
+            const int RobotDegrees = 0; // TODO: Bad hack? Was robot.RobotHeading before
 
-            var gunDegrees = 0.0;
+            double gunDegrees;
             var enemyNextPos = gs.OurRobot.NextPosition(gs.OurRobot.RobotHeading, gs.OurRobot.Velocity);
 
             var gunAngleToEnemy = Global.XYToDegree(enemyNextPos.Item1, enemyNextPos.Item2, robot.X, robot.Y);
@@ -241,10 +256,10 @@
             }
             else
             {
-                gunDegrees = gunAngleDifference < 0.0 ? -Global.MAX_GUN_ROTATION : Global.MAX_GUN_ROTATION;
+                gunDegrees = gunAngleDifference < 0.0 ? -Global.MaxGunRotation : Global.MaxGunRotation;
             }
 
-            var radarDegrees = 0.0;
+            double radarDegrees;
             var radarAngleToEnemy = Global.XYToDegree(enemyNextPos.Item1, enemyNextPos.Item2, robot.X, robot.Y);
             var radarAngleDifference = radarAngleToEnemy - robot.RadarHeading;
             var radarAngleDifferenceAbs = Math.Abs(radarAngleDifference);
@@ -258,13 +273,13 @@
             }
             else
             {
-                radarDegrees = radarAngleDifference < 0.0 ? -Global.MAX_RADAR_ROTATION : Global.MAX_RADAR_ROTATION;
+                radarDegrees = radarAngleDifference < 0.0 ? -Global.MaxRadarRotation : Global.MaxRadarRotation;
             }
 
-            var firePower = (Math.Abs(gunDegrees) < Global.TOLERANCE && gs.EnemyRobot.CanFire) ? 1.0 : 0.0;
+            var firePower = (Math.Abs(gunDegrees) < Global.Tolerance && gs.EnemyRobot.CanFire) ? 1.0 : 0.0;
 
-            return new RobotInstructions(distance, robotDegrees, gunDegrees, radarDegrees, firePower);
+            return new RobotInstructions(0, RobotDegrees, gunDegrees, radarDegrees, firePower, velocityChange);
         }
-
+        #endregion
     }
 }

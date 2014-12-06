@@ -105,19 +105,19 @@
         {
             if (!this.IsActive)
             {
-                return null;
+                return new Projectile(this.X, this.Y, this.Heading, this.Power, false, this.Owner);
             }
 
             var newPos = this.NextPosition();
             var x = newPos.Item1;
             var y = newPos.Item2;
 
-            if (x > Global.BF_WIDTH || x < 0)
+            if (x > Global.BfWidth || x < 0)
             {
                 this.IsActive = false;
             }
 
-            if (y > Global.BF_HEIGHT || y < 0)
+            if (y > Global.BfHeight || y < 0)
             {
                 this.IsActive = false;
             }
@@ -155,9 +155,9 @@
             var newY = displacedPosition.Item2 + this.Y;
 
             newX = newX < 0 ? 0 : newX;
-            newX = newX > Global.BF_WIDTH ? Global.BF_WIDTH : newX;
+            newX = newX > Global.BfWidth ? Global.BfWidth : newX;
             newY = newY < 0 ? 0 : newY;
-            newY = newY > Global.BF_HEIGHT ? Global.BF_HEIGHT : newY;
+            newY = newY > Global.BfHeight ? Global.BfHeight : newY;
 
             return new Tuple<double, double>(newX, newY);
         }

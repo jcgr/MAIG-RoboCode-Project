@@ -1,6 +1,5 @@
 ﻿﻿namespace MAIG_RoboCode_Project.MonteCarlo
 {
-    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
 
@@ -8,7 +7,6 @@
 
     public class MCTS
     {
-
         public static void Main()
         {
             // Test method
@@ -19,13 +17,7 @@
 
             var gamestate = new Gamestate(us, them, new List<Projectile>(), null);
 
-            
-            Console.WriteLine("Pre-search");
             mcts.Search(gamestate);
-
-            Console.WriteLine("Post-search");
-
-            Console.ReadLine();
         }
 
         /// <summary>
@@ -51,8 +43,8 @@
             sw.Start();
 
 		    this.CurrIteration = 0;
-		    while (sw.ElapsedMilliseconds < Global.MCTS_ALLOWED_SEARCH_TIME
-				    && this.CurrIteration < Global.MCTS_MAX_ITERATIONS)
+		    while (sw.ElapsedMilliseconds < Global.MCTSAllowedSearchTime
+				    && this.CurrIteration < Global.MCTSMaxIterations)
 		    {
 			    // Selection + Expansion
 			    var currNode = this.Selection();
@@ -92,7 +84,7 @@
                 if (!tempNode.IsLeafNode())
                     tempNode = tempNode.BestChild();
                 else
-                    return tempNode.expand();
+                    return tempNode.Expand();
 
             return tempNode;
         }

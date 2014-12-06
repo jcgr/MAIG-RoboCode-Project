@@ -2,78 +2,169 @@
 {
     using System;
 
+    /// <summary>
+    /// The globally accessed elements of the MCTS-Robot.
+    /// </summary>
     public static class Global
     {
+        /// <summary>
+        /// The difference tolerated between two "equal" decimal values.
+        /// </summary>
+        public const double Tolerance = 1.0E-15;
+
+        /// <summary>
+        /// How many searches should be done before the robot scans for the enemy again.
+        /// </summary>
+        public const int ScanCounter = 60;
+
         #region Score Values
 
-        public const double PLAYER_SCORE_WEIGHT = 1.0;
+        /// <summary>
+        /// The weight to give the score of the player when calculating score.
+        /// </summary>
+        public const double PlayerScoreWeight = 1.0;
 
-        public const double ENEMY_SCORE_WEIGHT = 0.5;
+        /// <summary>
+        /// The weight to give the score for the enemy player when calculating score.
+        /// </summary>
+        public const double EnemyScoreWeight = 0.5;
 
-        public const double SCORE_PER_BULLET_DAMAGE = 1;
+        /// <summary>
+        /// The amount of points granted for each point of damage dealt by a bullet.
+        /// </summary>
+        public const double ScorePerBulletDamage = 1.0;
 
-        public const double SCORE_SURVIVAL_BONUS = 50;
+        /// <summary>
+        /// The amount of points granted for surviving a round.
+        /// </summary>
+        public const double ScoreSurvivalBonus = 50.0;
 
-        public const double SCORE_MOVEMENT = 1;
+        /// <summary>
+        /// The amount of game points granted for each scored movement point.
+        /// </summary>
+        public const double ScoreMovement = 1.5;
 
-        public const double SCORE_GUN_DIRECTION = 0.1;
+        /// <summary>
+        /// The amount of negative points given for each angle the gun was wrong on a turn.
+        /// </summary>
+        public const double ScoreGunDirection = 0.1;
 
-        public const double SCORE_SHOOT = 0.3;
+        /// <summary>
+        /// The amount of points granted for having shot a bullet.
+        /// </summary>
+        public const double ScoreShoot = 0.1;
+
+        /// <summary>
+        /// The amount of points granted for each point of energy the robot has.
+        /// </summary>
+        public const double ScoreEnergy = 0.01;
 
         #endregion
 
         #region Simulation Values & Intervals
 
-        public const double STARTING_ROBOT_ENERGY = 100;
+        /// <summary>
+        /// The amount of energy a robot starts with.
+        /// </summary>
+        public const double StartingRobotEnergy = 100;
 
-        public const double MAX_GUN_ROTATION = 20;
+        /// <summary>
+        /// The maximum amount a robot can turn its gun in a turn.
+        /// </summary>
+        public const double MaxGunRotation = 20;
 
-        public const double GUN_TURN_INTERVAL = 10;
+        /// <summary>
+        /// The maximum amount a robot can turn its radar in a turn.
+        /// </summary>
+        public const double MaxRadarRotation = 45;
 
-        public const double ROBOT_TURN_INTERVAL = 20;
+        /// <summary>
+        /// The maximum turning rate for the robot when generating new instructions in the simulation.
+        /// </summary>
+        public const double SimulationMaxRobotRotation = 10;
 
-        public const double SIMULATION_MAX_ROBOT_ROTATION = 40;
+        /// <summary>
+        /// The maximum turning rate for the radar when generating new instructions in the simulation.
+        /// </summary>
+        public const double SimulationMaxRadarRotation = 40;
 
-        public const double RADAR_TURN_INTERVAL = 20;
+        /// <summary>
+        /// The size of the interval between different instructions for turning the robot.
+        /// </summary>
+        public const double RobotTurnInterval = 20;
 
-        public const double SIMULATION_MAX_RADAR_ROTATION = 40;
+        /// <summary>
+        /// The size of the interval between different instructions for turning the gun.
+        /// </summary>
+        public const double GunTurnInterval = 10;
 
-        public const double MAX_RADAR_ROTATION = 45;
-
-        #endregion
-
-        #region Robocode Values
-
-        public const double COOLING_RATE = 0.1;
-
-        public static double BF_WIDTH = 100;
-
-        public static double BF_HEIGHT = 100;
-
-        #endregion
-
-        #region Privates
-
-        private static Random rand;
+        /// <summary>
+        /// The size of the interval between different instructions for turning the radar.
+        /// </summary>
+        public const double RadarTurnInterval = 20;
 
         #endregion
 
         #region MCTS Constants
 
-        public const double MCTS_VISIT_THRESHOLD = 2;
+        /// <summary>
+        /// The visit threshold for children in the Monte-Carlo Tree Search algorithm.
+        /// </summary>
+        public const double MCTSVisitThreshold = 2;
 
-        public const double MCTS_EXPLORATION_CONSTANT = 10;
+        /// <summary>
+        /// The exploration constant in the Monte-Carlo Tree Search algorithm.
+        /// </summary>
+        public const double MCTSExplorationConstant = 10;
 
-        public const double MCTS_MAX_PATH_TO_ROOT = 10;
+        /// <summary>
+        /// The maximum path to the root in the tree of the Monte-Carlo Tree Search algorithm.
+        /// </summary>
+        public const double MCTSMaxPathToRoot = 10;
 
-        public const double MCTS_ALLOWED_SEARCH_TIME = 1000;
+        /// <summary>
+        /// The maximum allowed search time in the Monte-Carlo Tree Search algorithm.
+        /// </summary>
+        public const double MCTSAllowedSearchTime = 1000;
 
-        public const double MCTS_MAX_ITERATIONS = 500;
+        /// <summary>
+        /// The maximum number of iterations allowed in the Monte-Carlo Tree Search algorithm.
+        /// </summary>
+        public const double MCTSMaxIterations = 500;
 
         #endregion
 
-        public const double TOLERANCE = 1.0E-15;
+        #region Robocode Values
 
+        /// <summary>
+        /// The cooling rate of the guns.
+        /// </summary>
+        public const double CoolingRate = 0.1;
+
+        /// <summary>
+        /// Gets or sets the width of the battlefield.
+        /// </summary>
+        public static double BfWidth { get; set; }
+
+        /// <summary>
+        /// Gets or sets the height of the battlefield.
+        /// </summary>
+        public static double BfHeight { get; set; }
+
+        #endregion
+
+        #region Privates
+
+        /// <summary>
+        /// The random object used in the Monte-Carlo Tree Search.
+        /// </summary>
+        private static Random rand;
+
+        #endregion
+
+        /// <summary>
+        /// Gets the random object used globally by the algorithm.
+        /// </summary>
         public static Random Random
         {
             get
@@ -103,8 +194,8 @@
             var x = Math.Cos(radians) * radius;
             var y = Math.Sin(-radians) * radius;
 
-            x = Math.Abs(x) < TOLERANCE ? 0 : x;
-            y = Math.Abs(y) < TOLERANCE ? 0 : y;
+            x = Math.Abs(x) < Tolerance ? 0 : x;
+            y = Math.Abs(y) < Tolerance ? 0 : y;
 
             return new Tuple<double, double>(x, y);
         }
