@@ -157,10 +157,10 @@
         /// <param name="survival">The initial value of the survival score.</param>
         /// <param name="lastSurvivor">The initial value of the last survivor score.</param>
         /// <param name="bullet">The initial value of the bullet score.</param>
-        /// <param name="gunDirection">The initial value of the gunDirection score.</param>
+        /// <param name="robotHeading">The initial value of the robotHeading score.</param>
         /// <param name="shootScore">The initial value of the shoot score score.</param>
         /// <returns>The new score list.</returns>
-        public static Dictionary<string, double> CreateScoreList(double survival = 0, double lastSurvivor = 0, double bullet = 0, double gunDirection = 0, double shootScore = 0)
+        public static Dictionary<string, double> CreateScoreList(double survival = 0, double lastSurvivor = 0, double bullet = 0, double robotHeading = 0, double shootScore = 0)
         {
             var newList = new Dictionary<string, double>
                               {
@@ -168,7 +168,7 @@
                                   { "last", lastSurvivor },
                                   { "bullet", bullet },
                                   { "movementScore", bullet },
-                                  { "gunDirection", gunDirection },
+                                  { "robotHeading", robotHeading },
                                   { "shootScore", shootScore }
                               };
 
@@ -189,7 +189,7 @@
                                   { "bullet", scoreList["bullet"] },
                                   { "movementScore", scoreList["movementScore"] },
                                   { "shootScore", scoreList["shootScore"] },
-                                  { "gunDirection", scoreList["gunDirection"] }
+                                  { "robotHeading", scoreList["robotHeading"] }
                               };
 
             return newList;
@@ -226,9 +226,9 @@
 
             status = energy <= 0 && status != RoboStatus.Destroyed ? RoboStatus.Disabled : RoboStatus.Healthy;
 
-            var gunHeading = NewGunHeading(ri.GunDegrees) + ri.RobotDegrees;
-            var radarHeading = NewRadarHeading(ri.RadarDegrees) + ri.RobotDegrees + ri.GunDegrees;
-            var robotHeading = this.NewHeading(ri.RobotDegrees);
+            var robotHeading = this.RobotHeading + NewHeading(ri.RobotDegrees, this.Velocity);
+            var gunHeading = this.GunHeading + NewGunHeading(ri.GunDegrees) + robotHeading;
+            var radarHeading = this.RadarHeading + NewRadarHeading(ri.RadarDegrees) + gunHeading;
 
             var velocity = this.NewVelocity(ri.VelocityChange);
             ri.MoveDistance = velocity;
@@ -237,6 +237,11 @@
 
             var x = newPos.Item1;
             var y = newPos.Item2;
+
+            if ((x < 0 || x > Global.BfWidth) || (y <= 0  || y >= Global.BfHeight))
+            {
+                velocity = 0;
+            }
 
             return new RobotInfo(energy, velocity, x, y, robotHeading, gunHeading, radarHeading, gunHeat, this.Name, status, scores);
         }
@@ -254,10 +259,10 @@
             var newX = displacedPosition.Item1 + this.X;
             var newY = displacedPosition.Item2 + this.Y;
 
-            newX = newX < 0 ? 0 : newX;
-            newX = newX > Global.BfWidth ? Global.BfWidth : newX;
-            newY = newY < 0 ? 0 : newY;
-            newY = newY > Global.BfHeight ? Global.BfHeight : newY;
+            newX = newX <= 0 ? 0 : newX;
+            newX = newX >= Global.BfWidth ? Global.BfWidth : newX;
+            newY = newY <= 0 ? 0 : newY;
+            newY = newY >= Global.BfHeight ? Global.BfHeight : newY;
 
             return new Tuple<double, double>(newX, newY);
         }
@@ -274,7 +279,7 @@
             score += this.ScoreList["survival"] * Global.ScoreSurvivalBonus;
             score += this.ScoreList["shootScore"] * Global.ScoreShoot;
             score += this.ScoreList["movementScore"] * Global.ScoreMovement;
-            score += this.ScoreList["gunDirection"] * Global.ScoreGunDirection;
+            score += this.ScoreList["robotHeading"] * Global.ScoreRobotHeading;
             return score;
         }
         #endregion
@@ -299,7 +304,19 @@
         {
             return Math.Abs(change) > Global.MaxRadarRotation ? (change > 0 ? Global.MaxRadarRotation : -Global.MaxRadarRotation) : change;
         }
-        
+
+        /// <summary>
+        /// Calculates the change in robot heading.
+        /// </summary>
+        /// <param name="change">Amount to turn the robot.</param>
+        /// <param name="velocity">The speed of the robot.</param>
+        /// <returns>How much the robot should turn.</returns>
+        private static double NewHeading(double change, double velocity)
+        {
+            var maxTurnRate = 10 - (0.75 * Math.Abs(velocity));
+            return Math.Abs(change) > maxTurnRate ? (change > 0 ? maxTurnRate : -maxTurnRate) : change;
+        }
+
         /// <summary>
         /// Attempts to make the robot shoot.
         /// </summary>
@@ -388,16 +405,6 @@
             return Math.Max(this.GunHeat - reduction, 0);
         }
 
-        /// <summary>
-        /// Calculates the change in robot heading.
-        /// </summary>
-        /// <param name="change">Amount to turn the robot.</param>
-        /// <returns>How much the robot should turn.</returns>
-        private double NewHeading(double change)
-        {
-            var maxTurnRate = 10 - (0.75 * Math.Abs(this.Velocity));
-            return Math.Abs(change) > maxTurnRate ? (change > 0 ? maxTurnRate : -maxTurnRate) : change;
-        }
         #endregion
     }
 }

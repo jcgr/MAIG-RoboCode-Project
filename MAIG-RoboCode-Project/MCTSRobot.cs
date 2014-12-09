@@ -36,6 +36,11 @@
         private bool ShouldScan { get; set; }
 
         /// <summary>
+        /// Gets or sets the scan direction.
+        /// </summary>
+        private int ScanDirection { get; set; }
+
+        /// <summary>
         /// Gets or sets the counter to check if the robot should scan.
         /// </summary>
         private int ScanCounter { get; set; }
@@ -45,13 +50,13 @@
         /// </summary>
         public override void Run()
         {
+            this.SetColors(Color.Green, this.GunColor, this.RadarColor);
+
+            this.ShouldScan = true;
+            this.ScanDirection = Global.Random.Next(2) == 0 ? -1 : 1;
             this.ScanCounter = Global.ScanCounter;
             Global.BfWidth = this.BattleFieldWidth;
             Global.BfHeight = this.BattleFieldHeight;
-
-            this.ShouldScan = true;
-            this.RadarColor = Color.Blue;
-            this.ScanColor = Color.Yellow;
 
             var mcts = new MCTS();
             this.Projectiles = new List<Projectile>();
@@ -61,53 +66,54 @@
             {
                 while (this.ShouldScan)
                 {
-                    this.TurnGunRight(20);
+                    this.TurnGunRight(this.ScanDirection * 20);
                 }
 
                 var gs = new Gamestate(new RobotInfo(this), this.Enemy, this.Projectiles, null);
 
                 var tn = mcts.Search(gs);
+                if (tn == null)
+                {
+                    this.ResetScanParameters();
+                    continue;
+                }
 
                 var i = tn.Gamestate.Instructions;
 
+                if (Math.Abs(i.FirePower) > 0.0 && this.GunHeat <= 0)
+                {
+                    this.Fire(i.FirePower);
+                }
+
+                this.ScanCounter--;
+                if (this.ScanCounter <= 0)
+                {
+                    this.ResetScanParameters();
+                }
+
                 if (Math.Abs(i.RobotDegrees) >= Global.Tolerance)
                 {
+                    Console.WriteLine("it got here");
                     this.TurnRight(i.RobotDegrees);
-
-                    // Console.WriteLine("robot degrees " + i.RobotDegrees);
+                    continue;
                 }
 
                 if (Math.Abs(i.GunDegrees) >= Global.Tolerance)
                 {
                     this.TurnGunRight(i.GunDegrees);
-
-                    // Console.WriteLine("gun degrees " + i.GunDegrees);
+                    continue;
                 }
 
                 if (Math.Abs(i.RadarDegrees) >= Global.Tolerance)
                 {
                     this.TurnRadarRight(i.RadarDegrees);
-
-                    // Console.WriteLine("radar degress " + i.RadarDegrees);
+                    continue;
                 }
 
                 if (Math.Abs(i.MoveDistance) >= Global.Tolerance)
                 {
                     this.Ahead(i.MoveDistance);
-
-                    // Console.WriteLine("move distance " + i.MoveDistance);
                 }
-                
-                if (Math.Abs(i.FirePower) > 0.0 && this.GunHeat <= 0)
-                {
-                    this.Fire(i.FirePower);
-                    this.Projectiles.Add(new Projectile(this.X, this.Y, this.GunHeading, i.FirePower, true, this.Name));
-
-                    // Console.WriteLine("fire power" + i.FirePower);
-                }
-
-                this.Projectiles = this.Projectiles.Select(p => p.NextTick()).ToList();
-                this.ScanCounter--;
             }
         }
 
@@ -147,6 +153,16 @@
             var y = Global.BfHeight / 2.0;
 
             return new RobotInfo(Global.StartingRobotEnergy, 0, x, y, Zero, Zero, Zero, Zero, "Enemy");
+        }
+
+        /// <summary>
+        /// Resets the scan parameters.
+        /// </summary>
+        private void ResetScanParameters()
+        {
+            this.ShouldScan = true;
+            this.ScanDirection = Global.Random.Next(2) == 0 ? -1 : 1;
+            this.ScanCounter = Global.ScanCounter;
         }
     }
 }

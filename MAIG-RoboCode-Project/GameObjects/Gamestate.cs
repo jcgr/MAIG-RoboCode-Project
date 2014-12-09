@@ -76,36 +76,54 @@
             {
                 enemyRobot.ScoreList["survival"] = 1;
             }
-
-            // Calculate angle to enemy
-            var gunAngleToEnemy = Global.XYToDegree(enemyRobot.X, enemyRobot.Y, ourRobot.X, ourRobot.Y);
-            var angle1 = Math.Abs(gunAngleToEnemy - ourRobot.GunHeading);
-            var angle2 = Math.Abs(ourRobot.GunHeading - gunAngleToEnemy);
                 
-            // Adds angle difference to score list
-            ourRobot.ScoreList["gunDirection"] = angle1 < angle2 ? -angle1 : -angle2;
+            // Adds change in robot heading to score list
+            var diff = Math.Abs(ourRobot.RobotHeading - gs.OurRobot.RobotHeading);
+            var difference = diff > 180 ? 360 - diff : diff;
+
+            ourRobot.ScoreList["robotHeading"] = difference;
+
+            ourRobot.ScoreList["movementScore"] = 0;
+
+            if (ourRobot.X < 50)
+            {
+                ourRobot.ScoreList["movementScore"] += ourRobot.X - 50;
+            }
+            else if (ourRobot.X > Global.BfWidth - 50)
+            {
+                ourRobot.ScoreList["movementScore"] += ourRobot.X - Global.BfWidth;
+            }
+
+            if (ourRobot.Y < 50)
+            {
+                ourRobot.ScoreList["movementScore"] += ourRobot.Y - 50;
+            }
+            else if (ourRobot.Y > Global.BfHeight - 50)
+            {
+                ourRobot.ScoreList["movementScore"] += ourRobot.Y - Global.BfHeight;
+            }
 
             // If robot decreased velocity, decrease score. Else increase it by how much it increased.
-            if (Math.Abs(ourRobot.Velocity) <= Math.Abs(gs.OurRobot.Velocity))
+            if (Math.Abs(Math.Abs(ourRobot.Velocity) - Math.Abs(gs.OurRobot.Velocity)) < Global.Tolerance)
             {
-                ourRobot.ScoreList["movementScore"] = -1;
+                ourRobot.ScoreList["movementScore"] += -1;
             }
             else
             {
-                if (Math.Abs(ourRobot.X - gs.OurRobot.X) < Global.Tolerance && Math.Abs(ourRobot.Y - gs.OurRobot.Y) < Global.Tolerance)
+                if ((Math.Abs(ourRobot.X - gs.OurRobot.X) < Global.Tolerance && Math.Abs(ourRobot.Y - gs.OurRobot.Y) < Global.Tolerance) && Math.Abs(ourRobot.Velocity - gs.OurRobot.Velocity) > Global.Tolerance)
                 {
-                    ourRobot.ScoreList["movementScore"] = Math.Abs(ourRobot.Velocity - gs.OurRobot.Velocity);
+                    ourRobot.ScoreList["movementScore"] += -1;
                 }
                 else
                 {
-                    ourRobot.ScoreList["movementScore"] = -1;
+                    ourRobot.ScoreList["movementScore"] += Math.Abs(ourRobot.Velocity - gs.OurRobot.Velocity);
                 }
             }
             
             // Awards the robot for attempting to fire
             if (ours.FirePower > 0 && gs.OurRobot.CanFire)
             {
-                ourRobot.ScoreList["shootScore"] = 1; // TODO: Should it total the scores down the tree or only score per gamestate?
+                ourRobot.ScoreList["shootScore"] = 1; 
             }
 
             return new Gamestate(ourRobot, enemyRobot, movedProjectiles, ours);

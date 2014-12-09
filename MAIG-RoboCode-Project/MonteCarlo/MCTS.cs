@@ -1,5 +1,6 @@
 ﻿﻿namespace MAIG_RoboCode_Project.MonteCarlo
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
 
@@ -62,7 +63,7 @@
 
 		    foreach (var tn in this.Root.Children)
 		    {
-			    if (tn.GetScore() > bestNodeScore)
+			    if (tn.GetScore() >= bestNodeScore)
 			    {
 				    bestNode = tn;
 				    bestNodeScore = tn.GetScore();

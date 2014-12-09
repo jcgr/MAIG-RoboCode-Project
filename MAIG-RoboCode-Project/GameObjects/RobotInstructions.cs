@@ -157,9 +157,8 @@
                 return false;
             }
 
-            var maxDegree = 10 - (0.75 * velocity);
-
-            return !(Math.Abs(ri.RobotDegrees) > maxDegree);
+            var maxDegree = 10 - (0.75 * Math.Abs(velocity));
+            return Math.Abs(ri.RobotDegrees) <= maxDegree;
         }
 
         /// <summary>
@@ -227,14 +226,14 @@
             }
             else
             {
-                velocityChange = 0; // TODO: Bad hack? Was robot.Velocity before
+                velocityChange = 0;
                 if (Global.Random.Next(5) == 0)
                 {
                     velocityChange = Global.Random.Next(3) - 2;
                 }
             }
 
-            const int RobotDegrees = 0; // TODO: Bad hack? Was robot.RobotHeading before
+            const int RobotDegrees = 0;
 
             double gunDegrees;
             var enemyNextPos = gs.OurRobot.NextPosition(gs.OurRobot.RobotHeading, gs.OurRobot.Velocity);

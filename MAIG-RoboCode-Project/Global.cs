@@ -15,7 +15,7 @@
         /// <summary>
         /// How many searches should be done before the robot scans for the enemy again.
         /// </summary>
-        public const int ScanCounter = 60;
+        public const int ScanCounter = 30;
 
         #region Score Values
 
@@ -45,9 +45,9 @@
         public const double ScoreMovement = 1.5;
 
         /// <summary>
-        /// The amount of negative points given for each angle the gun was wrong on a turn.
+        /// The amount of points given for changing the heading of the robot.
         /// </summary>
-        public const double ScoreGunDirection = 0.1;
+        public const double ScoreRobotHeading = 0.4;
 
         /// <summary>
         /// The amount of points granted for having shot a bullet.
@@ -57,7 +57,7 @@
         /// <summary>
         /// The amount of points granted for each point of energy the robot has.
         /// </summary>
-        public const double ScoreEnergy = 0.01;
+        public const double ScoreEnergy = 0.05;
 
         #endregion
 
@@ -91,12 +91,12 @@
         /// <summary>
         /// The size of the interval between different instructions for turning the robot.
         /// </summary>
-        public const double RobotTurnInterval = 20;
+        public const double RobotTurnInterval = 2;
 
         /// <summary>
         /// The size of the interval between different instructions for turning the gun.
         /// </summary>
-        public const double GunTurnInterval = 10;
+        public const double GunTurnInterval = 5;
 
         /// <summary>
         /// The size of the interval between different instructions for turning the radar.
@@ -110,22 +110,22 @@
         /// <summary>
         /// The visit threshold for children in the Monte-Carlo Tree Search algorithm.
         /// </summary>
-        public const double MCTSVisitThreshold = 2;
+        public const double MCTSVisitThreshold = 3;
 
         /// <summary>
         /// The exploration constant in the Monte-Carlo Tree Search algorithm.
         /// </summary>
-        public const double MCTSExplorationConstant = 10;
+        public const double MCTSExplorationConstant = 1;
 
         /// <summary>
         /// The maximum path to the root in the tree of the Monte-Carlo Tree Search algorithm.
         /// </summary>
-        public const double MCTSMaxPathToRoot = 10;
+        public const double MCTSMaxPathToRoot = 25;
 
         /// <summary>
         /// The maximum allowed search time in the Monte-Carlo Tree Search algorithm.
         /// </summary>
-        public const double MCTSAllowedSearchTime = 1000;
+        public const double MCTSAllowedSearchTime = 10;
 
         /// <summary>
         /// The maximum number of iterations allowed in the Monte-Carlo Tree Search algorithm.
