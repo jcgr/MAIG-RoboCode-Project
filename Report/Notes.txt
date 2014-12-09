@@ -1,0 +1,12 @@
+http://papers.nips.cc/paper/5145-convergence-of-monte-carlo-tree-search-in-simultaneous-move-games
+http://mcts.ai/bibliography/index.html
+http://en.wikipedia.org/wiki/Monte_Carlo_tree_search
+https://hal.inria.fr/hal-00563480/PDF/auger.pdf
+http://en.wikipedia.org/wiki/Partially_observable_system
+http://www0.cs.ucl.ac.uk/staff/D.Silver/web/Applications_files/pomcp.pdf
+http://geneura.ugr.es/cig2012/papers/paper54.pdf
+http://www.aaai.org/ocs/index.php/aaai/aaai12/paper/download/5142/5237
+http://papers.nips.cc/paper/4662-learning-partially-observable-models-using-temporally-abstract-decision-trees.pdf
+http://www.aaai.org/Papers/AAAI/2004/AAAI04-112.pdf
+http://papers.nips.cc/paper/4031-monte-carlo-planning-in-large-pomdps.pdf
+http://en.wikipedia.org/wiki/Monte_Carlo_tree_search
