@@ -10,3 +10,5 @@ http://papers.nips.cc/paper/4662-learning-partially-observable-models-using-temp
 http://www.aaai.org/Papers/AAAI/2004/AAAI04-112.pdf
 http://papers.nips.cc/paper/4031-monte-carlo-planning-in-large-pomdps.pdf
 http://en.wikipedia.org/wiki/Monte_Carlo_tree_search
+https://learnit.itu.dk/pluginfile.php/107160/course/section/59891/Pepels%20%20Winands%2C%20%20Enhancements%20for%20monte-carlo%20tree%20search%20in%20ms%20pac-man.%20.pdf
+https://learnit.itu.dk/pluginfile.php/107160/course/section/59891/Browne%20et%20al.%20A%20Survey%20of%20Monte%20Carlo%20Tree%20Search%20Methods..pdf
