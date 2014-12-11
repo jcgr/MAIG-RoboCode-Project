@@ -2,7 +2,6 @@
 \label{05}
 In this section, we discuss how well different versions of our robot played against some sample robots provided with the Robocode installation. We also present data gathered while testing as well as evaluate the significant differences between each robot (if any).
 
-%Variance bars on mean score bar graph represents Standard Deviation
 \footnote{The variances were not equal between Default and MCTS-3, so a different critical t-value was used.}
 
 \subsection{Test Set-Up}
@@ -47,9 +46,14 @@ This robot is highly rewarded for turning around, which causes it to spin wildly
 We had anticipated that this robot would shoot more than the default robot, but we did not notice any apparent difference in the amount of shots fired. This is likely due to the trigger happiness of the default robot; if it already shoots as often as it can, then increasing the shooting reward is unlikely to make much of a difference.
 
 \subsection{Data}
+The scoring data in this section is represented as percentages of the total score in a single battle, e.g. our robot got 25\% of the total points and the enemy robot got the last 75\%. We represent it as such because of the stochastic nature of spawning positions and robot heading at the start of a round. By comparing percentage of the scores instead of absolute values, we are letting these random factors influence the results in the least possible way.
 
 \subsubsection{Default-MCTS Robot}
-As the 
+As the default-MCTS robot was the baseline for our tests, we have done all significance comparisons using the test data for this robot.
+
+Table \ref{table-default-score} indicates large differences in performance against the three different enemy robots. While the default robot never gets below 23\% score against \textit{MyFirstRobot}, it does poorly against the \textit{Spinbot} and even worse against the \textit{Tracker} robot. Interestingly, the robot is consistently poor against the \textit{Tracker} robot, as evidenced by the lower standard deviation (and seen on figure \ref{figure-BarGraph}\footnote{The variance bars on the graph represent standard deviation.}).
+
+The distribution of scores against the enemy robots are shown in figures \ref{figure--Distribution-MFR}, \ref{figure--Distribution-Spinbot}, and \ref{figure--Distribution-Tracker}. The values are the decimal representations of the percentage scores achieved by the default robot. While the scores mostly fit somewhat nicely around the bell curve, the results against both \textit{MyFirstRobot} and \textit{Spinbot} have one rather extreme outlier.
 
 \begin{table}
 \begin{center}
@@ -72,36 +76,35 @@ Tracker & 10.8\% & 10.5\% & None & 0.779 & 0.246 \\
 
 \begin{figure}[htp]
 \centerline{\includegraphics[width=\columnwidth]{Images/MyFirstRobotDistribution}}
-\caption{Distribution of results against the sample robot "MyFirstRobot".}
+\caption{Distribution of results by default-MCTS against the "MyFirstRobot".}
 \label{figure--Distribution-MFR}
 \end{figure}
 
 \begin{figure}[htp]
 \centerline{\includegraphics[width=\columnwidth]{Images/SpinbotDistribution}}
-\caption{Distribution of results against the sample robot "Spinbot".}
+\caption{Distribution of results by default-MCTS against the "Spinbot" robot.}
 \label{figure--Distribution-Spinbot}
 \end{figure}
 
 \begin{figure}[htp]
 \centerline{\includegraphics[width=\columnwidth]{Images/TrackerDistribution}}
-\caption{Distribution of results against the sample robot "Tracker".}
+\caption{Distribution of results by default-MCTS against the "Tracker" robot.}
 \label{figure--Distribution-Tracker}
 \end{figure}
 
 \begin{figure}[htp]
 \centerline{\includegraphics[width=\columnwidth]{Images/BarGraph}}
 \caption{Mean score percentages for the Default MCTS controller.}
-\label{figure--BarGraph}
+\label{figure-BarGraph}
 \end{figure}
 
-\subsection{Other versions}
-Tables \ref{table-MCTS1-score}, \ref{table-MCTS2-score}, and \ref{table-MCTS3-score} show the results of our 
-
+\subsubsection{Other versions}
+Tables \ref{table-MCTS1-score}, \ref{table-MCTS2-score}, and \ref{table-MCTS3-score} show the scores of the three variations of our robot. When compared to the default-MCTS robot, the only robot variation that showed a significant difference was the MCTS-2 robot, which was expected with the observed behaviour described previously.
 
 \begin{table}
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\caption{Score for the MCTS1 Robot}
+\caption{Score for the MCTS-1 Robot}
 \label{table-MCTS1-score}
 \begin{tabular}{|c | c | c |c | c| c |}
 \hline
@@ -120,7 +123,7 @@ Tracker & 13.7\% & 13.9\% & 14.3 & 1.789 & 0.567 \\
 \begin{table}
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\caption{Score for the MCTS2 Robot}
+\caption{Score for the MCTS-2 Robot}
 \label{table-MCTS2-score}
 \begin{tabular}{|c | c | c |c | c| c |}
 \hline
@@ -139,8 +142,8 @@ Tracker & 4.4\% & 4.5\% & 4.6 & 0.491 & 0.155 \\
 \begin{table}
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
-\caption{Score for the MCTS3 Robot}
-\label{table-MCTS1-score}
+\caption{Score for the MCTS-3 Robot}
+\label{table-MCTS3-score}
 \begin{tabular}{|c | c | c |c | c| c |}
 \hline
 Enemy & Mean & Median & Mode & Std. Dev & Std. Err.\\
@@ -157,8 +160,9 @@ Tracker & 11.4\% & 11.1\% & None & 1.303 & 0.413 \\
 
 \subsection{Evaluation}
 
-
+%which robot was best
 \subsubsection{Speed}
+The speed of the algorithm is capped at 10 milliseconds per iteration in order to avoid skipping any turns in robot. This does not allow the algorithm to search very deep into the tree, but we believe this to be a somewhat positive behaviour. Because the simulation of the game state and the assumptions we make about the actions taken by the opponent can potentially be wildly inaccurate, we will rarely benefit from simulating too far into the future.
 
 \begin{table}
 \begin{center}
@@ -169,7 +173,7 @@ Tracker & 11.4\% & 11.1\% & None & 1.303 & 0.413 \\
 \hline
 Controller & Mean & Variance & t-value & critical t & Significant\\
 \hline
-Default & 0.256 & 0.00025 & & &\\
+Default & 0.256 & 0.00025 & N/A & N/A & N/A\\
 \hline
 MCTS-1 & 0.272 & 0.00108 & 1.397 & 2.101 & No\\
 \hline
