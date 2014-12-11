@@ -31,3 +31,26 @@ How does your algorithm work? Describe in as much detail as you can fit into the
 
 Also, how did you interface it to the game?
 % Part of the game, simple programming task
+
+
+
+
+\subsection{Game Simulation}
+
+
+\subsection{Evaluation Heuristic}
+When the Monte-Carlo Tree Search algorithm calls for the score of a node (game state), we use a heuristic (equation \ref{eq_heuristic_1}) to evaluate the state of the game at that node. 
+\begin{equation}
+\label{eq_heuristic_1}
+score = OurRobotScore +  (\frac{1}{2} \frac{1}{100} EnemyEnergy)
+\end{equation}
+Equation \ref{eq_heuristic_2} describes how we calculate the score of our own robot.
+\\Where \textit{EnergyScore} is $(\frac{1}{100}OurEnergy)$, \textit{BulletDamageScore} is the amount of damage dealt by bullets until this point, \textit{ShootScore} is 0.1 if we shot this round; 0.0 if not. \textit{MovementScore}\footnote{MovementScore is also penalized if the robot moves too close to the walls of the battlefield.} is the change in velocity that the robot made. If the robot did not change velocity or move, \textit{MovementScore} is instead given a $-1$ score. Finally the movement score is multiplied by $1.5$. \textit{RobotHeadingScore} is the amount of degrees that the robot turned this round multiplied by 0.4.
+\begin{equation}
+\begin{split}
+\label{eq_heuristic_2}
+ourRobotScore = EnergyScore+BulletDamageScore\\
++ShootScore+MovementScore\\
++RobotHeadingScore
+\end{split}
+\end{equation}
