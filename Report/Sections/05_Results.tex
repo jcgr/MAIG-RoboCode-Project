@@ -2,8 +2,6 @@
 \label{05}
 In this section, we discuss how well different versions of our robot played against some sample robots provided with the Robocode installation. We also present data gathered while testing as well as evaluate the significant differences between each robot (if any).
 
-\footnote{The variances were not equal between Default and MCTS-3, so a different critical t-value was used.}
-
 \subsection{Test Set-Up}
 We tested four different set-ups of the robot versus four different sample robots. Each test consisted of 10 tests of a 10-round battle with otherwise default Robocode rules. In order to test the effect of each setting, we only changed a single setting in each variation of our robot from our default robot. Because of the large number of different possible combination of settings, it is not likely that we have found the best possible one. The settings for our robots can be seen in table \ref{table-robotsettings}.
 
@@ -99,7 +97,7 @@ Tracker & 10.8\% & 10.5\% & None & 0.779 & 0.246 \\
 \end{figure}
 
 \subsubsection{Other versions}
-Tables \ref{table-MCTS1-score}, \ref{table-MCTS2-score}, and \ref{table-MCTS3-score} show the scores of the three variations of our robot. When compared to the default-MCTS robot, the only robot variation that showed a significant difference was the MCTS-2 robot, which was expected with the observed behaviour described previously.
+Tables \ref{table-MCTS1-score}, \ref{table-MCTS2-score}, and \ref{table-MCTS3-score} show the scores of the three variations of our robot. As shown by tables \ref{table-MFS-significance}\footnote{The variances were not equal between Default and MCTS-3, so a different critical t-value was used.}, \ref{table-spinbot-significance}, and \ref{table-tracker-significance}, two of the robot variations have significant differences in score percentage. MCTS-1 performs significantly better against the \textit{Spinbot} and the \textit{Tracker} robot, but not so against \textit{MyFirstRobot}. MCTS-2 performs significantly worse against all three enemy robots.
 
 \begin{table}
 \begin{center}
@@ -158,11 +156,6 @@ Tracker & 11.4\% & 11.1\% & None & 1.303 & 0.413 \\
 \end{center}
 \end{table}
 
-\subsection{Evaluation}
-
-%which robot was best
-\subsubsection{Speed}
-The speed of the algorithm is capped at 10 milliseconds per iteration in order to avoid skipping any turns in robot. This does not allow the algorithm to search very deep into the tree, but we believe this to be a somewhat positive behaviour. Because the simulation of the game state and the assumptions we make about the actions taken by the opponent can potentially be wildly inaccurate, we will rarely benefit from simulating too far into the future.
 
 \begin{table}
 \begin{center}
@@ -185,4 +178,51 @@ MCTS-3 & 0.260 & 0.0009 & 0.354 & 2.145 & No\\
 \end{center}
 \end{table}
 
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1}
+\caption{Significance test using the Spinbot Robot}
+\label{table-spinbot-significance}
+\begin{tabular}{|c | c | c |c | c | c |}
+\hline
+Controller & Mean & Variance & t-value & critical t & Significant\\
+\hline
+Default & 0.157 & 0.00046 & N/A & N/A & N/A\\
+\hline
+MCTS-1 & 0.195 & 0.00059 & 3.730 & 2.101 & Yes\\
+\hline
+MCTS-2 & 0.034 & 0.00009 & -16.502 & 2.101 & Yes\\
+\hline
+MCTS-3 & 0.159 & 0.00110 & 0.215 & 2.1001& No\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
 
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1}
+\caption{Significance test using the Tracker Robot}
+\label{table-tracker-significance}
+\begin{tabular}{|c | c | c |c | c | c |}
+\hline
+Controller & Mean & Variance & t-value & critical t & Significant\\
+\hline
+Default & 0.108 & 0.00006 & N/A & N/A & N/A\\
+\hline
+MCTS-1 & 0.137 & 0.0003 & 4.744 & 2.101 & Yes\\
+\hline
+MCTS-2 & 0.004 & 0.00002 & -22.067 & 2.101 & Yes\\
+\hline
+MCTS-3 & 0.114 & 0.00017 & 1.229 & 2.101 & No\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Evaluation}
+As noted above, MCTS-1 performs significantly better than our default-MTCS against two of the three enemy robots. It also averages a better score against the last of the three robots, although this difference is not significant. Thus we can conclude that MCTS-1 is the best of the four robots tested for this paper, default-MCTS and MCTS-3 are about equal, and by far the worst is MCTS-2, which performs horribly against all three enemies.
+
+%which robot was best
+\subsubsection{Speed}
+The speed of the algorithm is capped at 10 milliseconds per iteration in order to avoid skipping any turns in robot. This does not allow the algorithm to search very deep into the tree, but we believe this to be a somewhat positive behaviour. Because the simulation of the game state and the assumptions we make about the actions taken by the opponent can potentially be wildly inaccurate, we will rarely benefit from simulating too far into the future.
