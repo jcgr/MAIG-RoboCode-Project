@@ -1,42 +1,40 @@
 \section{Methods}
 \label{04}
+Our current implementation assumes that there is only one opponent in the game. The more opponents are added to the game, the less precisely will the algorithm be able to simulate game states.
 
 \subsection{Monte-Carlo implementation}
 \label{04_MCTS}
 
-Our implementation of the MCTS algorithm differs from the original MCTS algorithms in a couple of ways. One is one we read about in relation to using MCTS for Pac-Man\cite{pepels2012enhancements}, the other is specific to Robocode and how our simulation works.
+Our implementation of the MCTS algorithm differs from the original MCTS algorithms in a few of ways. The two most interesting differences are related to our child selection and our search depth.
 
-\subsubsection{Child selection}
+\subsubsection{Child Selection}
+When a node selects which child it should explore, normal MCTS chooses the child based on the UCT\cite{kocsis2006bandit} value of the children. It is possible, however, that a child will score lower than the average of its siblings when playout happens, thus leaving the child with a low UCT-value. As higher UCT values are prioritized by MCTS, the parent of the bad child will not be explored for quite some time (if ever again). This will generate an extremely asymmetric tree, which we would like to prevent. In order to do so, we only use the UCT value for exploration if all children of a the node we are exploring has been visited at least three times.
 
-When a node selects which child it should explore, normal MCTS chooses based on the UCT\cite{kocsis2006bandit} value of the children. It can happen, however, that a child ends up in a loss on the first exploration how the simulation plays out, even though most ways through that child are good. This leaves that child with a low UCT value, and it is thus not explored again for a long time. In order to prevent this from happening, we only use UCT for exploration once all children have been visited more than 3 times.
+Through trial and error, we concluded that an exploration constant of 1 was what worked best in our implementation of Monte-Carlo Tree Search. In general, a higher exploration constant will lead to a more breadth-first search than a depth-first search, which is desirable for our current implementation as we do not have the luxury to simulate too far down the tree (both due to time constraints and due to inaccuracy in simulation).
 
-\subsubsection{Max search depth}
+\subsubsection{Max Search Depth}
+Due to the nature of Robocode, we are unable to simulate our opponents properly (see section \ref{03}). This means that our simulations become more inaccurate the further down the tree we go. We chose to incorporate a maximum search depth to prevent simulations that were too inaccurate from disturbing the tree too much. We chose a maximum search depth of 25, as it lets us reach a simulation that is relevant, without risking that the simulation becomes too inaccurate.
 
-Due to the nature of Robocode, we are unable to simulate our opponents properly. This means that our simulations become more inaccurate the further down the tree we go. We chose to incorporate a maximum search depth to prevent simulations that were too inaccurate from disturbing the tree too much. We chose a maximum search depth of 25, as it lets us reach a simulation that is relevant, without risking that the simulation is almost the opposite of what is actually happening.
-
-
-
-
-% Cut after time
-% Child exploration
-% Max depth during search
-
-How does your algorithm work? Describe in as much detail as you can fit into the report. 
-%Differences between standard MCTS and ours (see pacman paper?)
-%Monte-Carlo Tree Search parameters (both static and variable)
-%Gamestate representation
-%Gamestate simulation (incl. assumptions about current gamestate and actions taken by enemy robot)
-%Branching factor + interval for considered moves
-%Scoring System (both score modifiers and evaluation function)
-
-Also, how did you interface it to the game?
-% Part of the game, simple programming task
-
-
-
-
+\subsubsection{Branching Factor}
+The branching factor of the algorithm is equal to the number of different moves that can be made by our robot in a single turn. This is a staggeringly high number, as the game uses double precision for degrees, distances, and firing power. Because of this, we have discretized the different options down to 32 (see equation \ref{eq_branchingfactor}).
+\begin{equation}
+\begin{split}
+\label{eq_branchingfactor}
+32 = 5 (speed intervals) + 11 (robot turn intervals)\\
++9 (gun turn intervals) + 5 (radar turn intervals) 
+\\+ 2 (shoot)
+\end{split}
+\end{equation}
 \subsection{Game Simulation}
+Because Robocode is somewhat competitive, the inner workings of the game is not easily accessed from a robot, we had to do an emulation of the game in order to simulate future game states in the MCTS tree. Each node contains a game state which consists of information about our robot, the enemy robot, the projectiles that are currently flying through the air, and the instructions given to our robot in order to get from the previous game state to this one.
 
+When simulating the next tick of the game, we follow steps 4 \& 5 of the Robocode Processing Loop\cite{wiki:robocodeGamePhysics}. Currently we do not simulate our robot and the enemy robot simultaneously, which is a difference between our simulation and the Robocode Processing Loop.
+\subsubsection{Bullets} 
+Our bullet simulation involves getting the next position of every currently active bullet and using those new positions to check for collisions with the two robots.
+\subsubsection{Our Robot}
+The Monte-Carlo Tree Search selects a robot instruction for the game state simulation to use when getting the next state of our robot. Currently we do not simulate collisions between robots (ramming) or radar scans.
+\subsubsection{Enemy Robot}
+When we simulate the enemy robot, we assume that it knows the location of all projectiles that are currently active. If the next position of the enemy robot is hit by a bullet, we assume that it will prioritize dodging this projectile. If it attempts to do so, it will search for another possible location that it can get to this turn that will not be hit by a projectile. In addition, we assume that the enemy knows our location and will attempt to turn its gun towards our robot. If the angle to our robot is within five degrees of the enemy gun, we assume that he will fire at our robot.
 
 \subsection{Evaluation Heuristic}
 When the Monte-Carlo Tree Search algorithm calls for the score of a node (game state), we use a heuristic (equation \ref{eq_heuristic_1}) to evaluate the state of the game at that node. 
@@ -49,8 +47,11 @@ Equation \ref{eq_heuristic_2} describes how we calculate the score of our own ro
 \begin{equation}
 \begin{split}
 \label{eq_heuristic_2}
-ourRobotScore = EnergyScore+BulletDamageScore\\
-+ShootScore+MovementScore\\
+ourRobotScore = EnergyScore++ShootScore\\
+BulletDamageScore+MovementScore\\
 +RobotHeadingScore
 \end{split}
 \end{equation}
+
+\subsection{Interfacing it to the Game}
+Because the main "gameplay" of Robocode is actually coding a robot, we simply coded the robot inside the framework provided to all Robocode players.
