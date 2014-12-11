@@ -2,13 +2,26 @@
 \label{02}
 Most games attempt to engage the player by presenting a number of challenges for the player to overcome. Sometimes these challenges consist of precision, timing, execution speed and reaction time, while in other cases the challenge consists of making a strategic choice. When making these strategic choices, a player must consider not only the present state of the game, but also the actions taken by the adversary (either another player, an artificial intelligence or the game itself). 
 
-
-
 \subsection{Monte-Carlo Tree Search}
 \label{02_MCTS}
+
+Monte-Carlo Tree Search (MCTS)\cite{browne2012survey} is a searching algorithm that is based on the Monte Carlo method, which dates back to the 1940s. The idea behind the MCTS algorithm was explored in the 1980s and various implementations were written in the following years. It was not, however, until 2006 where a breakthough was made, which made AIs able to utilize MCTS to play games that had been considered too challenging until then, such as Go\cite{gelly2011monte}\cite{chaslot2010monte}.
+
+MCTS is, as the name implies, a tree search algorithm. Unlike other tree searches, it is a highly selective, best-first search that is able to figure out which parts of the search space that are the most promising and thus focus on that.
+
+In order to determine the most promising part of the search space, MCTS runs a lot of \textit{playouts}. \textit{Playouts} are simulations of playing the game until an end condition is reached, with each move being chosen at random. The score of the game state at the end is based on the UCT and is used to update the weights of the tree in such a way that better nodes are more likely to be explored further.
+
+The better the heuristic is at determining the value of a gamestate, the better MCTS will fare. An example of this is to factor in how many lives Pac-Man has left at an end state instead of only evaluating at the score.
+
 % Discuss heuristic, general usefulness
 
 \subsection{MCTS in Partially Observable Games}
+
+MCTS works on the premises of information. The more it knows about what is going on, the better it performs. This means that in fully observable games, such as chess or Pac-Man, MCTS performs best.
+
+But what about partially observable games?
+
+
 % Mention other research, discuss potential problems with inaccurate evaluation of states
 
 
