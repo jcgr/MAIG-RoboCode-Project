@@ -3,7 +3,13 @@
 
 The game we use is called "Robocode"\cite{robocode}. It is a programing game where the players program robots to battle other players' robots. 
 
-Fights between robots take place on a battlefield, which is represented as a Cartesian coordinate system, with (0, 0) being in the lower left corner. Distances are measured in pixels and directions are measured in degrees, where north is 0 degrees, east is 90 degrees, south is 180 degrees and west is 270 degrees. Robots decide on what action they want to take and all robots' actions are then carried out simultaneously.
+Fights between robots take place on a battlefield (see figure \ref{figure-RobocodeBattle01}), which is represented as a Cartesian coordinate system, with (0, 0) being in the lower left corner. Distances are measured in pixels and directions are measured in degrees, where north is 0 degrees, east is 90 degrees, south is 180 degrees and west is 270 degrees. Robots decide on what action they want to take and all robots' actions are then carried out simultaneously.
+
+\begin{figure}[htp]
+\centerline{\includegraphics[width=\columnwidth]{Images/RobocodeBattle01}}
+\caption{A battle between two robots..}
+\label{figure--RobocodeBattle01}
+\end{figure}
 
 A robot starts with 100 energy, no idea of where the enemies are and can either move (ahead or back), turn its base, turn its gun, turn its radar or fire its gun during a turn. Moving and turning has no influence on the energy of the robot, but firing the gun and getting hit by bullets decrease the energy of the robot. When a robot is out of energy, it dies. There are limits to how much a robot can move or turn during a single turn\cite{wiki:robocodeGamePhysics}, as having no limits would break the game.
 
