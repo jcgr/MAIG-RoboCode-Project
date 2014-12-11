@@ -1,7 +1,27 @@
-\section{Conclusions}
+\section{Conclusion}
 \label{06}
-The conclusion goes here.
 
-%test more variations before deciding on a default baseline
-% While the robot plays, it performs poorly against all but the poorest of contenders
-What are the strengths and shortcomings of your method? Why did you choose method X instead of Y? How well would it generalize to other game genres? How would you develop it further, if you had time?
+The goal of this project was to test the Monte-Carlo tree search algorithm in Robocode to learn how well it would perform, considering the partially observable nature of the game. We expected that it would not perform well, as there is a lot of information that a robot (and therefore also MCTS) does not have access to.
+
+We tested four MCTS robots, a default robot and three variations where the reward of actions were changed, against three different, simple robots. One of our robots was significantly better against two of the three test robots than the default robot, but even that was unable to defeat any of the test robots.
+
+There are a couple of reasons for this: Our reward system is not the best, as there are something we do not account for, and our simulation of the game is very inaccurate.
+
+Our reward system only considers basic things such as firing, moving, turning and the energy of the robot and its opponent. We do not account for things like ramming the enemy or for scanning the enemy, though both are arguably important. Ramming an opponent deals damage to them and is therefore a good thing to do. Scanning the enemy provides us with up-to-date information about it, which in turn helps the simulation.
+
+The reward system could also be changed to include minimizing the opponents score, in the style of the minimax algorithm. This would provide the robot with another point from which to evaluate different game states.
+
+With regards to the game simulation, there is one glaring problem: Our simulation does not simulate the opponent properly. It assumes that the opponent plays in a way that we would deem perfect, but few, if any, robots play that way. This means that our simulation is not consistent with what happens in the game, which again means that the exploration of our search tree (and the values for our reward system) is based on incorrect information.
+
+It is not feasible to improve the simulation by writing robot-specific simulations. It would give very little benefit, especially when another robot is fought. Instead, one could look into learning how the opponent plays. As a battle lasts for ten rounds, it would be possible to use the first round as a "suicide" run, where the robot focuses only on figuring how the opponent plays. During the remaining rounds the robot should fare better and be able to regain enough points to win.
+
+Such learning would involve looking into machine learning techniques and would still not be entirely accurate (we do not know which direction the opponent fires in, for example), but if done correctly the robot should should be able to fight on even terms with a large variety of robots.
+
+Another way to simulation would be to extend the part of the Robocode API that deals with evolving the game state and use that for simulation. It transform Robocode from a partially observable game into a fully observable game, which means that MCTS would have access to all the information it needs. It should be noted, however, that this would not work for competitions in Robocode, as it is not a functionality available to robots.
+
+When these improvements have been made, looking into how the robot performs against multiple opponents simultaneously would be interesting. While it would likely not be able to perform, or even equally as well, against multiple opponents compared to a single opponent, it would enable the robot to take part in free-for-all battles, which is a facet of the Robocode game that the current MCTS implementation does not support at all.
+
+% Reward: No ramming, walls are not good. Better simulation makes reward system better. Reward scanning of opponent. Actual scores for the opponent
+% Extend robocode API and let that that take care of the simulation. Cannot be used for competition.
+% Does not simulate scanning
+% Multiple opponents.
