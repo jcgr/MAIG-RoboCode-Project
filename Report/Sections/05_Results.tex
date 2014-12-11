@@ -1,14 +1,184 @@
 \section{Results}
 \label{05}
-Did it work? 
-% While the robot plays, it performs poorly against all but the poorest of contenders
+In this section, we discuss how well different versions of our robot played against some sample robots provided with the Robocode installation. We also present data gathered while testing as well as evaluate the significant differences between each robot (if any).
 
-How well? Provide some figures, and a table or two. 
-% Test 5 different variations of parameters against 4 different robots (1 great, 1 decent, 1 bad, 1 terrible)
+%Variance bars on mean score bar graph represents Standard Deviation
+\footnote{The variances were not equal between Default and MCTS-3, so a different critical t-value was used.}
 
-%Show Robot Parameters in a table
+\subsection{Test Set-Up}
+We tested four different set-ups of the robot versus four different sample robots. Each test consisted of 10 tests of a 10-round battle with otherwise default Robocode rules. In order to test the effect of each setting, we only changed a single setting in each variation of our robot from our default robot. Because of the large number of different possible combination of settings, it is not likely that we have found the best possible one. The settings for our robots can be seen in table \ref{table-robotsettings}.
 
-How much time does it take?
-%
+\subsubsection{Enemy Robots} 
+We tested our robot against the \textit{MyFirstRobot}, \textit{SittingDuck}, \textit{Spinbot}, and \textit{Tracker} sample robots. \textit{MyFirstRobot} moves in a see-saw motion, rotates its gun and fires whenever it scans another robot. \textit{Spinbot} moves in a circular motion and fires a powerful shot whenever it scans an enemy. The \textit{Tracker} robot scans for a target, locks on to it, moves close and then fires at the target. As the name suggests, the \textit{SittingDuck} takes no action, does not move and does not react. It is often used to test how well the guns of a robot works.
 
-Remember to include significance values (remember the t-test?), variance bars… Reread some of the papers from class and compare how they report their results.
+We have not provided tables and data sets for the results of our tests versus the \textit{SittingDuck} robot, as we obtained a 100\% score against it with all four versions of the MCTS robot on every trial. 
+
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1}
+\caption{Robot settings for score rewards}
+\label{table-robotsettings}
+\begin{tabular}{|c | c | c |c |}
+\hline
+Robot & Movement & Turning & Shooting\\
+\hline
+Default & 1.5 & 0.4 & 0.1\\
+\hline
+MCTS-1 & \textbf{3.0} & 0.4 & 0.1\\
+\hline
+MCTS-2 & 1.5 & \textbf{0.8} & 0.1\\
+\hline
+MCTS-3 & 1.5 & 0.4 & \textbf{0.2}\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsubsection{Default-MCTS Robot}
+We established the baseline "Default" robot settings by trying out different settings and deciding on a combination that seemed to be somewhat successful. The settings used for this robot offer a good compromise between shooting, moving, and turning. This default robot is somewhat trigger happy, however, and at times attempts to shoot every time it is possible.
+
+\subsubsection{MCTS-1}
+This robot should prioritize movement more than it ended up doing. It is, however, difficult to truly evaluate how much more it moves without tracking it specifically, which we did not. 
+
+\subsubsection{MCTS-2} 
+This robot is highly rewarded for turning around, which causes it to spin wildly while it shoots seemingly at random. It is possible that the doubling of the turning reward was too much and it would have been more useful to test with less of an increase (or perhaps even a decrease).
+
+\subsubsection{MCTS-3}
+We had anticipated that this robot would shoot more than the default robot, but we did not notice any apparent difference in the amount of shots fired. This is likely due to the trigger happiness of the default robot; if it already shoots as often as it can, then increasing the shooting reward is unlikely to make much of a difference.
+
+\subsection{Data}
+
+\subsubsection{Default-MCTS Robot}
+As the 
+
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\caption{Score for the Default-MCTS Robot}
+\label{table-default-score}
+\begin{tabular}{|c | c | c |c | c| c |}
+\hline
+Enemy & Mean & Median & Mode & Std. Dev & Std. Err.\\
+\hline
+MyFirstRobot & 25.6\% & 25.4\% & None & 1.609 & 0.509\\
+\hline
+Spinbot & 15.7\% & 16.3\% & None & 2.145 & 0.678 \\
+\hline
+Tracker & 10.8\% & 10.5\% & None & 0.779 & 0.246 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{figure}[htp]
+\centerline{\includegraphics[width=\columnwidth]{Images/MyFirstRobotDistribution}}
+\caption{Distribution of results against the sample robot "MyFirstRobot".}
+\label{figure--Distribution-MFR}
+\end{figure}
+
+\begin{figure}[htp]
+\centerline{\includegraphics[width=\columnwidth]{Images/SpinbotDistribution}}
+\caption{Distribution of results against the sample robot "Spinbot".}
+\label{figure--Distribution-Spinbot}
+\end{figure}
+
+\begin{figure}[htp]
+\centerline{\includegraphics[width=\columnwidth]{Images/TrackerDistribution}}
+\caption{Distribution of results against the sample robot "Tracker".}
+\label{figure--Distribution-Tracker}
+\end{figure}
+
+\begin{figure}[htp]
+\centerline{\includegraphics[width=\columnwidth]{Images/BarGraph}}
+\caption{Mean score percentages for the Default MCTS controller.}
+\label{figure--BarGraph}
+\end{figure}
+
+\subsection{Other versions}
+Tables \ref{table-MCTS1-score}, \ref{table-MCTS2-score}, and \ref{table-MCTS3-score} show the results of our 
+
+
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\caption{Score for the MCTS1 Robot}
+\label{table-MCTS1-score}
+\begin{tabular}{|c | c | c |c | c| c |}
+\hline
+Enemy & Mean & Median & Mode & Std. Dev & Std. Err.\\
+\hline
+MyFirstRobot & 27.2\% & 26.6\% & None & 3.292 & 1.041\\
+\hline
+Spinbot & 19.5\% & 19.3\% & None & 2.437 & 0.771 \\
+\hline
+Tracker & 13.7\% & 13.9\% & 14.3 & 1.789 & 0.567 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\caption{Score for the MCTS2 Robot}
+\label{table-MCTS2-score}
+\begin{tabular}{|c | c | c |c | c| c |}
+\hline
+Enemy & Mean & Median & Mode & Std. Dev & Std. Err.\\
+\hline
+MyFirstRobot & 8.4\% & 8.3\% & None & 1.854 & 0.586\\
+\hline
+Spinbot & 3.4\% & 3.6\% & 3.7 & 0.970 & 0.307  \\
+\hline
+Tracker & 4.4\% & 4.5\% & 4.6 & 0.491 & 0.155 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\caption{Score for the MCTS3 Robot}
+\label{table-MCTS1-score}
+\begin{tabular}{|c | c | c |c | c| c |}
+\hline
+Enemy & Mean & Median & Mode & Std. Dev & Std. Err.\\
+\hline
+MyFirstRobot & 26.0\% & 25.8\% & None & 3.054 & 0.965\\
+\hline
+Spinbot & 15.9\% & 15.1\% & None & 3.319 & 1.049  \\
+\hline
+Tracker & 11.4\% & 11.1\% & None & 1.303 & 0.413 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Evaluation}
+
+
+\subsubsection{Speed}
+
+\begin{table}
+\begin{center}
+\renewcommand{\arraystretch}{1}
+\caption{Significance test using the MyFirstRobot Robot}
+\label{table-MFS-significance}
+\begin{tabular}{|c | c | c |c | c | c |}
+\hline
+Controller & Mean & Variance & t-value & critical t & Significant\\
+\hline
+Default & 0.256 & 0.00025 & & &\\
+\hline
+MCTS-1 & 0.272 & 0.00108 & 1.397 & 2.101 & No\\
+\hline
+MCTS-2 & 0.844 & 0.00034 & -22.067 & 2.101 & Yes\\
+\hline
+MCTS-3 & 0.260 & 0.0009 & 0.354 & 2.145 & No\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
