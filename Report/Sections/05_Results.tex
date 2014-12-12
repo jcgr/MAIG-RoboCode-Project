@@ -3,7 +3,7 @@
 In this section, we discuss how well different versions of our robot played against some sample robots provided with the Robocode installation. We also present data gathered while testing as well as evaluate the significant differences between each robot (if any).
 
 \subsection{Test Set-Up}
-We tested four different set-ups of the robot versus four different sample robots. Each test consisted of 10 tests of a 10-round battle with otherwise default Robocode rules. In order to test the effect of each setting, we only changed a single setting in each variation of our robot from our default robot. Because of the large number of different possible combination of settings, it is not likely that we have found the best possible one. The settings for our robots can be seen in table \ref{table-robotsettings}.
+We tested four different set-ups of the robot versus four different sample robots. Each test consisted of 10 tests of a 10-round battle with otherwise default Robocode rules. In order to test the effect of each setting, we only changed a single setting in each variation of our robot from our default robot. Because of the large number of different possible combination of settings, it is likely that we have not found the best possible one. The settings for our robots can be seen in table \ref{table-robotsettings}.
 
 \subsubsection{Enemy Robots} 
 We tested our robot against the \textit{MyFirstRobot}, \textit{SittingDuck}, \textit{Spinbot}, and \textit{Tracker} sample robots. \textit{MyFirstRobot} moves in a see-saw motion, rotates its gun and fires whenever it scans another robot. \textit{Spinbot} moves in a circular motion and fires a powerful shot whenever it scans an enemy. The \textit{Tracker} robot scans for a target, locks on to it, moves close and then fires at the target. As the name suggests, the \textit{SittingDuck} takes no action, does not move and does not react. It is often used to test how well the guns of a robot works.
@@ -44,7 +44,7 @@ This robot is highly rewarded for turning around, which causes it to spin wildly
 We had anticipated that this robot would shoot more than the default robot, but we did not notice any apparent difference in the amount of shots fired. This is likely due to the trigger happiness of the default robot; if it already shoots as often as it can, then increasing the shooting reward is unlikely to make much of a difference.
 
 \subsection{Data}
-The scoring data in this section is represented as percentages of the total score in a single battle, e.g. our robot got 25\% of the total points and the enemy robot got the last 75\%. We represent it as such because of the stochastic nature of spawning positions and robot heading at the start of a round. By comparing percentage of the scores instead of absolute values, we are letting these random factors influence the results in the least possible way.
+The scoring data in this section is represented as percentages of the total score in a single battle, e.g. our robot got 25\% of the total points and the enemy robot got the remaining 75\%. We represent it as such because of the stochastic nature of spawning positions and robot heading at the start of a round. By comparing percentage of the scores instead of absolute values, we are letting these random factors influence the results in the least possible way.
 
 \subsubsection{Default-MCTS Robot}
 As the default-MCTS robot was the baseline for our tests, we have done all significance comparisons using the test data for this robot.
@@ -73,6 +73,12 @@ Tracker & 10.8\% & 10.5\% & None & 0.779 & 0.246 \\
 \end{table}
 
 \begin{figure}[htp]
+\centerline{\includegraphics[width=\columnwidth]{Images/BarGraph}}
+\caption{Mean score percentages for the Default MCTS controller.}
+\label{figure-BarGraph}
+\end{figure}
+
+\begin{figure}[htp]
 \centerline{\includegraphics[width=\columnwidth]{Images/MyFirstRobotDistribution}}
 \caption{Distribution of results by default-MCTS against the "MyFirstRobot".}
 \label{figure--Distribution-MFR}
@@ -88,12 +94,6 @@ Tracker & 10.8\% & 10.5\% & None & 0.779 & 0.246 \\
 \centerline{\includegraphics[width=\columnwidth]{Images/TrackerDistribution}}
 \caption{Distribution of results by default-MCTS against the "Tracker" robot.}
 \label{figure--Distribution-Tracker}
-\end{figure}
-
-\begin{figure}[htp]
-\centerline{\includegraphics[width=\columnwidth]{Images/BarGraph}}
-\caption{Mean score percentages for the Default MCTS controller.}
-\label{figure-BarGraph}
 \end{figure}
 
 \subsubsection{Other versions}

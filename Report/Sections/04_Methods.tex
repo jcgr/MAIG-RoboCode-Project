@@ -1,6 +1,6 @@
 \section{Methods}
 \label{04}
-Our current implementation assumes that there is only one opponent in the game. The more opponents are added to the game, the less precisely will the algorithm be able to simulate game states.
+Our current implementation assumes that there is only one opponent in the game. The more opponents that are added to the game, the less precise the simulations of the game state will become.
 
 \subsection{Monte-Carlo implementation}
 \label{04_MCTS}
@@ -13,7 +13,7 @@ When a node selects which child it should explore, normal MCTS chooses the child
 Through trial and error, we concluded that an exploration constant of 1 was what worked best in our implementation of Monte-Carlo Tree Search. In general, a higher exploration constant will lead to a more breadth-first search than a depth-first search, which is desirable for our current implementation as we do not have the luxury to simulate too far down the tree (both due to time constraints and due to inaccuracy in simulation).
 
 \subsubsection{Max Search Depth}
-Due to the nature of Robocode, we are unable to simulate our opponents properly (see section \ref{03}). This means that our simulations become more inaccurate the further down the tree we go. We chose to incorporate a maximum search depth to prevent simulations that were too inaccurate from disturbing the tree too much. We chose a maximum search depth of 25, as it lets us reach a simulation that is relevant, without risking that the simulation becomes too inaccurate.
+Due to the nature of Robocode, we are unable to simulate our opponents properly (see section \ref{03}). This means that our simulations become more inaccurate the further down the tree we go. We chose to incorporate a maximum search depth to prevent simulations that were too inaccurate from affecting the tree too much. We chose a maximum search depth of 25, as it lets us reach a simulation that is relevant, without risking that the simulation becomes highly inaccurate.
 
 \subsubsection{Branching Factor}
 The branching factor of the algorithm is equal to the number of different moves that can be made by our robot in a single turn. This is a staggeringly high number, as the game uses double precision for degrees, distances, and firing power. Because of this, we have discretized the different options down to 32 (see equation \ref{eq_branchingfactor}).
@@ -26,7 +26,7 @@ The branching factor of the algorithm is equal to the number of different moves 
 \end{split}
 \end{equation}
 \subsection{Game Simulation}
-Because Robocode is somewhat competitive, the inner workings of the game is not easily accessed from a robot, we had to do an emulation of the game in order to simulate future game states in the MCTS tree. Each node contains a game state which consists of information about our robot, the enemy robot, the projectiles that are currently flying through the air, and the instructions given to our robot in order to get from the previous game state to this one.
+Because Robocode is somewhat competitive - the inner workings of the game is not accessible from a robot - we had to do an emulation of the game in order to simulate future game states in the MCTS tree. Each node contains a game state which consists of information about our robot, the enemy robot, the projectiles that are currently flying through the air, and the instructions given to our robot in order to get from the previous game state to this one.
 
 When simulating the next tick of the game, we follow steps 4 \& 5 of the Robocode Processing Loop\cite{wiki:robocodeGamePhysics}. Currently we do not simulate our robot and the enemy robot simultaneously, which is a difference between our simulation and the Robocode Processing Loop.
 \subsubsection{Bullets} 
@@ -40,14 +40,14 @@ When we simulate the enemy robot, we assume that it knows the location of all pr
 When the Monte-Carlo Tree Search algorithm calls for the score of a node (game state), we use a heuristic (equation \ref{eq_heuristic_1}) to evaluate the state of the game at that node. 
 \begin{equation}
 \label{eq_heuristic_1}
-score = OurRobotScore +  (\frac{1}{2} \frac{1}{100} EnemyEnergy)
+score = OurRobotScore +  \left(\frac{1}{2} \frac{1}{100} EnemyEnergy\right)
 \end{equation}
 Equation \ref{eq_heuristic_2} describes how we calculate the score of our own robot.
-\\Where \textit{EnergyScore} is $(\frac{1}{100}OurEnergy)$, \textit{BulletDamageScore} is the amount of damage dealt by bullets until this point, \textit{ShootScore} is 0.1 if we shot this round; 0.0 if not. \textit{MovementScore}\footnote{MovementScore is also penalized if the robot moves too close to the walls of the battlefield.} is the change in velocity that the robot made. If the robot did not change velocity or move, \textit{MovementScore} is instead given a $-1$ score. Finally the movement score is multiplied by $1.5$. \textit{RobotHeadingScore} is the amount of degrees that the robot turned this round multiplied by 0.4.
+\\Where \textit{EnergyScore} is $\left(\frac{1}{100}OurEnergy\right)$, \textit{BulletDamageScore} is the amount of damage dealt by bullets until this point, \textit{ShootScore} is 0.1 if we shot this round; 0.0 if not. \textit{MovementScore}\footnote{MovementScore is also penalized if the robot moves too close to the walls of the battlefield.} is the change in velocity that the robot made. If the robot did not change velocity or move, \textit{MovementScore} is instead given a $-1$ score. Finally the movement score is multiplied by $1.5$. \textit{RobotHeadingScore} is the amount of degrees that the robot turned this round multiplied by 0.4.
 \begin{equation}
 \begin{split}
 \label{eq_heuristic_2}
-ourRobotScore = EnergyScore++ShootScore\\
+ourRobotScore = EnergyScore+ShootScore\\
 BulletDamageScore+MovementScore\\
 +RobotHeadingScore
 \end{split}

@@ -5,25 +5,25 @@ Most games attempt to engage the player by presenting a number of challenges for
 \subsection{Monte-Carlo Tree Search}
 \label{02_MCTS}
 
-Monte-Carlo Tree Search (MCTS)\cite{browne2012survey} is a searching algorithm that is based on the Monte Carlo method, which dates back to the 1940s. The idea behind the MCTS algorithm was explored in the 1980s and various implementations were written in the following years. It was not, however, until 2006 where a breakthough was made, which made AIs able to utilize MCTS to play games that had been considered too challenging until then, such as Go\cite{gelly2011monte}\cite{chaslot2010monte}.
+Monte-Carlo Tree Search\cite{browne2012survey} (MCTS) is a searching algorithm that is based on the Monte Carlo method, which dates back to the 1940s. The idea behind the MCTS algorithm was explored in the 1980s and various implementations were written in the following years. It was not, however, until 2006 where a breakthough was made, which made AIs able to utilize MCTS to play games that had been considered too challenging until then, such as Go\cite{gelly2011monte}\cite{chaslot2010monte}.
 
 MCTS is, as the name implies, a tree search algorithm. Unlike other tree searches, it is a highly selective, best-first search that is able to figure out which parts of the search space that are the most promising and thus focus on that.
 
-In order to determine the most promising part of the search space, MCTS runs a lot of \textit{playouts}. \textit{Playouts} are simulations of playing the game until an end condition is reached, with each move being chosen at random. The score of the game state at the end is based on the UCT and is used to update the weights of the tree in such a way that better nodes are more likely to be explored further.
+In order to determine the most promising part of the search space, MCTS runs a lot of \textit{playouts}. \textit{Playouts} are simulations of playing the game until an end condition is reached, with each move being chosen at random. The score of the game state at the end is based on a reward system and its value is used to update the weights of the tree in such a way that better nodes are more likely to be explored further.
 
-The better the heuristic is at determining the value of a gamestate, the better MCTS will fare. An example of this is to factor in how many lives Pac-Man has left at an end state instead of only evaluating at the score.
+The better the heuristic is at determining the value of a gamestate, the better MCTS will perform. An example of this is to factor in how many lives Pac-Man has left at an end state instead of only evaluating at the score.
 
 % Discuss heuristic, general usefulness
 
 \subsection{MCTS in Partially Observable Games}
 
-MCTS works on the premise of information. The more it knows about what is going on, the better it performs. This means that in fully observable games, such as chess or Pac-Man, where it has access to all information about a game state, MCTS will perform well. Based on this fact, it is sensible to assume that MCTS will not perform as well in partially observable games. 
+MCTS works on the premise of information. The more it knows about what is going on, the better it performs. This means that in fully observable games, such as chess or Pac-Man, where it has access to all information about a game state, MCTS is able to perform well. Considering how important information is to MCTS, it is sensible to assume that MCTS will not perform as well in partially observable games. 
 
-Imagine a version of chess where you do not know the position of your opponent's pawns until you try to move a piece to their position or they are within one square of any of your pieces. In such a game, MCTS would not be able to properly evaluate various game states, as it does not have the necessary information to do so. It can assume that the opponent plays in a certain way and evaluate the search space based on that, but it will not be accurate at all times.
+Imagine a version of chess where you do not know the position of your opponent's pawns until you try to move a piece to their position or they are within one square of any of your pieces. In such a game, MCTS would not be able to properly evaluate game states, as it does not have the necessary information to do so. It can assume that the opponent plays in a certain way and evaluate the game state based on that, but such an evaluation will be inaccurate to some degree.
 
-That a game is only partially observable does not mean that MCTS will not work. It simply means that algorithm will have to take into account that there are things it does not know and that it therefore must attempt to figure these things out. 
+That a game is only partially observable does not mean that MCTS will not work, however. It simply means that the algorithm will have to take into account that there are things it does not know, which means that it must either figure these things out or make assumptions about what has happened.
 
-Research indicates that is is possible to write MCTS implementations that works in a partially observable environment. The research has been done on very simple games (phantom tic-tac-toe)\cite{auger2011multiple} and on systems where it is possible to build a history of previously encountered states and run statistics on that\cite{silver2010monte}\cite{thrun1999monte}. While they are not developed enough to work with most partially observable games, it does prove that MCTS can be adapted to such games, given the right methods.
+Research indicates that is is possible to write MCTS implementations that works in a partially observable environments. The research has been done on very simple games (phantom tic-tac-toe)\cite{auger2011multiple} and on systems where it is possible to build a history of previously encountered states and run statistics on that\cite{silver2010monte}\cite{thrun1999monte}. While they are not developed enough to work with most partially observable games, it does prove that MCTS can be adapted to such games, given the right methods.
 
 % Mention other research, discuss potential problems with inaccurate evaluation of states
 
