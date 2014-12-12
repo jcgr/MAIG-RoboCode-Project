@@ -7,11 +7,9 @@ Most games attempt to engage the player by presenting a number of challenges for
 
 Monte-Carlo Tree Search\cite{browne2012survey} (MCTS) is a searching algorithm that is based on the Monte Carlo method, which dates back to the 1940s. The idea behind the MCTS algorithm was explored in the 1980s and various implementations were written in the following years. It was not, however, until 2006 where a breakthough was made, which made AIs able to utilize MCTS to play games that had been considered too challenging until then, such as Go\cite{gelly2011monte}\cite{chaslot2010monte}.
 
-MCTS is, as the name implies, a tree search algorithm. Unlike other tree searches, it is a highly selective, best-first search that is able to figure out which parts of the search space that are the most promising and thus focus on that.
+MCTS is, as the name implies, a tree search algorithm. Unlike other tree searches, it is a best-first search that focuses on the parts of the search space that are the most promising. In order to determine the most promising part of the search space, MCTS runs a lot of \textit{playouts}. \textit{Playouts} are simulations of playing the game until an end condition is reached, with each move being chosen at random. The score of the game state at the end is based on a reward system and its value is used to update the weights of the tree in such a way that better nodes are more likely to be explored further.
 
-In order to determine the most promising part of the search space, MCTS runs a lot of \textit{playouts}. \textit{Playouts} are simulations of playing the game until an end condition is reached, with each move being chosen at random. The score of the game state at the end is based on a reward system and its value is used to update the weights of the tree in such a way that better nodes are more likely to be explored further.
-
-The better the heuristic is at determining the value of a gamestate, the better MCTS will perform. An example of this is to factor in how many lives Pac-Man has left at an end state instead of only evaluating at the score.
+The better the heuristic is at determining the value of a gamestate, the better MCTS will perform. An example of this is to factor in how many turns it took to reach the end state instead of only evaluating the score of player.
 
 % Discuss heuristic, general usefulness
 
